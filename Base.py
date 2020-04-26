@@ -5,7 +5,6 @@ from pyglet.gl import GL_LINES
 from Quad import Quad
 from Helper import scaler, makeGrid, drawQuad, pointInside
 from Ship import Ship, newShips
-from Controller import gridFactor
 gridFactor = 10
 class Base:
     def __init__(self, posX, posY, size=500):
@@ -13,6 +12,7 @@ class Base:
         self.size = size
         self.visible = True
         self.highlightQuad=False
+        self.movableShip = True
         self.mat = [[0]*10]*10
         self.model = pySpt.Sprite(pyRes.animation('img/base/0.gif'),x=posX,y=posY)
         self.model.scale_x = scaler(self.model.width,self.size)
@@ -21,7 +21,7 @@ class Base:
         grid = makeGrid(posX,posY,gridFactor,size)
         self.grid = pyGra.vertex_list(len(grid) // 2,('v2i',grid))
 
-        self.ships = newShips( [ 5 ], self.size)
+        self.ships = newShips( [ 5 ], self.size, posX, posY)
                 
     def reset(self,ind=1):
         self.model  = pySpt.Sprite(
@@ -45,8 +45,8 @@ class Base:
             drawQuad(
                 self.mouseX,self.mouseY,
                 self.model.x, self.model.y,
-                self.size, gridFactor
+                self.size
                 )
-        # for ship in self.ships:
-        #     ship.draw()
+        for ship in self.ships:
+            ship.draw()
 

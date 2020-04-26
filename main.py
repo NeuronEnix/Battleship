@@ -1,5 +1,4 @@
 import pyglet
-from pyglet.gl import gluPerspective
 from Battleship import Battleship
 
 if __name__ == "__main__":

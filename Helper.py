@@ -1,4 +1,4 @@
-from Controller import  gridFactor
+gridFactor = 10
 from Quad import Quad
 import pyglet
 # General Purpose
@@ -14,14 +14,13 @@ def makeGrid(x, y, gridFactor,width,height=None):
         grid.extend( [x, i, x + width , i] )
     return grid
 
-        
-def drawQuad(mx,my,x,y,baseSize,gridFactor):
+
+def getCoord(px, py, x, y, baseSize):
     quadSize = baseSize // gridFactor
-    Quad(
-        (mx-x) // quadSize * quadSize + x,
-        (my-y) // quadSize * quadSize + y,
-        quadSize
-    ).draw()
+    return [(px-x) // quadSize * quadSize + x,(py-y) // quadSize * quadSize + y,quadSize]
+def drawQuad(mx,my,x,y,baseSize):
+    coord = getCoord(mx, my, x, y, baseSize)
+    Quad( coord[0], coord[1], coord[2] ).draw()
     
 def pointInside(px, py, model):
     x, y = model.x, model.y

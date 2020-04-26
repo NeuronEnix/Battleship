@@ -4,7 +4,7 @@ from pyglet.gl import GL_PROJECTION,GL_MODELVIEW
 
 from pyglet.window import mouse, key
 from Base import Base
-from Controller import baseMousePress, baseMouseDrag, baseMouseRelease, baseMouseMotion
+import BaseController as bc
 
 class Battleship(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
@@ -50,11 +50,19 @@ class Battleship(pyglet.window.Window):
         
         
 # Mouse
-    def on_mouse_press(self,x,y,button,modifiers):
-        if button == mouse.LEFT:
-            baseMousePress(self.base,x,y)
     def on_mouse_motion(self,x, y, dx, dy):
-        baseMouseMotion(self.base,x,y)
+        bc.mouseMotion(x, y, self.base)
+
+    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
+        bc.mouseDrag(x, y, self.base)
+    
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == mouse.LEFT:
+            bc.mousePress(x, y, self.base)
+    def on_mouse_release(self, x, y, button, modifiers):
+        if button == mouse.LEFT:
+            bc.mouseRelease(x, y, self.base)
+    
         
     def on_resize(self, width, height):
         width = max(1, width)
