@@ -15,11 +15,11 @@ def mouseDrag(px, py, base):
     if base.activeShip:
         sc.mouseDrag(px, py, base)    
 
-def mousePress(px, py, button,base):
-    if button == mouse.LEFT:
-        if base.visible and base.pointInside(px,py):
-            if base.shipMovable:
-                sc.mousePress(px, py, base)
+def mousePress(px, py, button,base):    
+    if base.visible and base.pointInside(px,py):
+        if base.shipMovable:
+            sc.mousePress(px, py,button, base)
+
 
 def mouseRelease(px, py, base):
     base.highlightQuad = False

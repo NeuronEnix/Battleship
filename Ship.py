@@ -2,7 +2,7 @@ import random
 import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
 
-from Helper import scaler, pointInside
+from Helper import scaler, pointInside, modelOn
 gridFactor = 10
 
 def newShips(shipList, baseSize, xyList):
@@ -41,6 +41,9 @@ class Ship:
     def pointInside(self, px, py):
         return pointInside(px, py, self.model)
 
+    def modelOn(self,ship):
+        return modelOn(self, ship)
+    
     def rotate(self):
         self.rotation = (self.rotation+1)%4
         self.model = self.makeShip(self.model.x, self.model.y)

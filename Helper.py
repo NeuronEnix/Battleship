@@ -62,9 +62,14 @@ def inRange( point, left, right):
 
 def modelInside(m1, m2):
     xInside = inRange(m1.x, m2.x, m2.x+ m2.width) and inRange (m1.x + m1.width, m2.x, m2.x+ m2.width)
-    yInside = inRange(m1.y, m2.y, m2.y+ m2.height) and inRange (m1.y + m1.height, m2.y, m2.y+ m2.height)
-    
+    yInside = inRange(m1.y, m2.y, m2.y+ m2.height) and inRange (m1.y + m1.height, m2.y, m2.y+ m2.height)    
     return xInside and yInside
+def modelOn(m1, m2):
+    xInside = inRange(m1.x, m2.x, m2.x+ m2.width) or inRange (m1.x + m1.width, m2.x, m2.x+ m2.width)
+    yInside = inRange(m1.y, m2.y, m2.y+ m2.height) or inRange (m1.y + m1.height, m2.y, m2.y+ m2.height)
+    return xInside and yInside
+
+    
 # def dispText(px, py, text):
 #     pyglet.text.Label(text,
 #                           font_name='Times New Roman',
