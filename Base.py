@@ -1,14 +1,18 @@
+import random
 import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
 import pyglet.graphics as pyGra
 from pyglet.gl import GL_LINES 
+
 from Quad import Quad
-from Helper import scaler, makeGrid, drawQuad, pointInside
+from Helper import scaler, makeGrid, drawQuad, pointInside, xyList
 from Ship import Ship, newShips
+
 gridFactor = 10
+shipLength = [2,3,4,5]
+
 class Base:
-    def __init__(self, posX, posY, size=500):
-        
+    def __init__(self, posX, posY, size=600):
         self.size = size
         self.visible = True
         self.highlightQuad=False
@@ -21,8 +25,10 @@ class Base:
         grid = makeGrid(posX,posY,gridFactor,size)
         self.grid = pyGra.vertex_list(len(grid) // 2,('v2i',grid))
 
-        self.ships = newShips( [ 5 ], self.size, posX, posY)
-                
+        self.ships = newShips( 
+                            random.sample(shipLength, len(shipLength)),
+                            self.size, xyList(self)
+                    )
     def reset(self,ind=1):
         self.model  = pySpt.Sprite(
             pyRes.animation('img/base/'+str(ind)+'.gif'),
@@ -37,7 +43,7 @@ class Base:
     
     def mouseAt(self, px, py):
         self.mouseX, self.mouseY = px, py
-        
+    
     def draw(self):
         self.model.draw()
         self.grid.draw(GL_LINES)

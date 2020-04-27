@@ -14,22 +14,23 @@ def makeGrid(x, y, gridFactor,width,height=None):
         grid.extend( [x, i, x + width , i] )
     return grid
 
-def getCoordShip(px, py, base, ship):
-    pass
-
-def getCoord(px, py, base, roundUp = False):
+def getIndex(px, py, base, roundUp = False):
     quadSize = base.size // gridFactor
     x = base.model.x
     y = base.model.y
     if roundUp:
-        xCoord = round((px-x) / quadSize)
-        yCoord = round((py-y) / quadSize)
+        coordX = round((px-x) / quadSize)
+        coordY = round((py-y) / quadSize)
     else:
-        xCoord = (px-x) // quadSize
-        yCoord = (py-y) // quadSize
-
-        
-    return [ xCoord * quadSize + x,yCoord * quadSize + y,quadSize]
+        coordX = (px-x) // quadSize
+        coordY = (py-y) // quadSize
+    return [coordX, coordY]
+def getCoord(px, py, base, roundUp = False):
+    quadSize = base.size // gridFactor
+    x = base.model.x
+    y = base.model.y
+    ind = getIndex(px, py, base, roundUp)
+    return [ ind[0] * quadSize + x, ind[1] * quadSize + y,quadSize]
 
 def drawQuad(mx,my,base):
     coord = getCoord(mx, my, base)
@@ -41,3 +42,23 @@ def pointInside(px, py, model):
     if px >= x and px <= x+w and py >= y and py <= y+h:
         return True
     return False  
+
+def xyList(base):
+    l = [
+        [ base.model.x, base.model.x + base.size // 2 ]*2,
+        [ base.model.y, base.model.y + base.size // 2 ]*2,       
+    ]
+    l[0][2], l[0][3] = l[0][3], l[0][2]
+    print(l[0],l[1],sep="\n")
+    return l        
+        
+    
+# def dispText(px, py, text):
+#     pyglet.text.Label(text,
+#                           font_name='Times New Roman',
+#                           font_size=10,
+#                           x=10, y=750).draw()
+
+# def mouseCoordDisp(px, py):
+#     text = 'x : ' + str(px) + 'y : ' + str(py) 
+#     dispText(10,500, text)
