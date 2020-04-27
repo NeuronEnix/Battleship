@@ -13,6 +13,7 @@ shipLength = [2,3,4,5]
 
 class Base:
     def __init__(self, posX, posY, size=600):
+        self.gridFactor = gridFactor
         self.size = size
         self.visible = True
         self.highlightQuad=False
@@ -41,7 +42,7 @@ class Base:
 
     def pointInside(self, px, py):
         return pointInside(px, py, self.model)
-    def objectInside(self, model):
+    def modelInside(self, model):
         return modelInside(model.model, self.model)
     def mouseAt(self, px, py):
         self.mouseX, self.mouseY = px, py
@@ -56,3 +57,24 @@ class Base:
                 )
         for ship in self.ships:
             ship.draw()
+
+    @staticmethod
+    def pointToIndex(px, py, base, roundUp = False):
+        quadSize = base.size // base.gridFactor
+        x = base.model.x
+        y = base.model.y
+        if roundUp:
+            coordX = round((px-x) / quadSize)
+            coordY = round((py-y) / quadSize)
+        else:
+            coordX = (px-x) // quadSize
+            coordY = (py-y) // quadSize
+        return [coordX, coordY]
+    @staticmethod
+    def pointToPoint(px, py, base, roundUp = False):
+        quadSize = base.size // gridFactor
+        x = base.model.x
+        y = base.model.y
+        ind = Base.pointToIndex(px, py, base, roundUp)
+        return [ ind[0] * quadSize + x, ind[1] * quadSize + y,quadSize]
+    

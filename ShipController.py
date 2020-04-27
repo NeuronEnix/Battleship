@@ -1,6 +1,6 @@
 from pyglet.window import mouse
 from Ship import Ship
-from Helper import getCoord, moveToRear, modelInside
+from Helper import  moveToRear, modelInside
     
 def mouseDrag(px, py, base):
     # if base.activeShip:
@@ -26,18 +26,23 @@ def mousePress(px, py,button,  base):
         ship = clickedShip(px, py, base.ships)
         if ship:
             ship.rotate()
+            sMod = ship.model
+            bMod = base.model
+            if not base.modelInside(ship):
+                pass
+
 
 def mouseRelease(px, py, base):
     if base.activeShip:
         ship = base.activeShip
         if base.pointInside(px, py):
             ship.land( 
-                getCoord(
+                base.pointToPoint(
                     ship.model.x, ship.model.y,
                     base, roundUp = True
                 ) 
             )
-            if not base.objectInside(ship):
+            if not base.modelInside(ship):
                 ship.resetPos()
         else:
             ship.resetPos()

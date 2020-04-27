@@ -14,26 +14,8 @@ def makeGrid(x, y, gridFactor,width,height=None):
         grid.extend( [x, i, x + width , i] )
     return grid
 
-def getIndex(px, py, base, roundUp = False):
-    quadSize = base.size // gridFactor
-    x = base.model.x
-    y = base.model.y
-    if roundUp:
-        coordX = round((px-x) / quadSize)
-        coordY = round((py-y) / quadSize)
-    else:
-        coordX = (px-x) // quadSize
-        coordY = (py-y) // quadSize
-    return [coordX, coordY]
-def getCoord(px, py, base, roundUp = False):
-    quadSize = base.size // gridFactor
-    x = base.model.x
-    y = base.model.y
-    ind = getIndex(px, py, base, roundUp)
-    return [ ind[0] * quadSize + x, ind[1] * quadSize + y,quadSize]
-
 def drawQuad(mx,my,base):
-    coord = getCoord(mx, my, base)
+    coord = base.pointToPoint(mx, my, base)
     Quad( coord[0], coord[1], coord[2] ).draw()
     
 
@@ -50,15 +32,16 @@ def moveToRear(obj, objList):
     objList[-1], objList[ind] = objList[ind], objList[-1]
     return objList
 
+def inRange( point, left, right):
+    return left <= point and point <= right
+
 def pointInside(px, py, model):
     x, y = model.x, model.y
     w, h = model.width, model.height
-    if px >= x and px <= x+w and py >= y and py <= y+h:
+    if inRange(px, x, x+w) and inRange(py, y, y+h):
         return True
     return False  
 
-def inRange( point, left, right):
-    return left <= point and point <= right
 
 def modelInside(m1, m2):
     xInside = inRange(m1.x, m2.x, m2.x+ m2.width) and inRange (m1.x + m1.width, m2.x, m2.x+ m2.width)
@@ -75,7 +58,3 @@ def modelOn(m1, m2):
 #                           font_name='Times New Roman',
 #                           font_size=10,
 #                           x=10, y=750).draw()
-
-# def mouseCoordDisp(px, py):
-#     text = 'x : ' + str(px) + 'y : ' + str(py) 
-#     dispText(10,500, text)
