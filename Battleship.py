@@ -2,7 +2,10 @@ import pyglet
 from pyglet.gl import glClearColor, glViewport, glMatrixMode,glLoadIdentity,glOrtho
 from pyglet.gl import GL_PROJECTION,GL_MODELVIEW
 from pyglet.window import mouse, key
+import pyglet.resource as pyRes
+import pyglet.sprite as pySpt
 
+import pyglet.graphics as pyGra
 from Base import Base
 import BaseController as bc
 import Helper as hp
@@ -19,17 +22,19 @@ class Battleship(pyglet.window.Window):
 
         #Default Configuration
         glClearColor(0.0,0.0,0.0,1.0)
-
+        self.sInd=1
+        self.gMat=[[1,5],[1,4],[2,5],[6,1]]
         self.base = Base(300,50)
-
+        self.aa = None
         self.ind = 1
-
+        self.ggind = 0
+        self.gg = self.model = pySpt.Sprite(pyRes.animation('img/blast/'+str(self.ggind)+'.gif'),x=600,y=50)
     def on_draw(self):
         self.clear()
         self.fps_display.draw()
 
         self.base.draw()
-    
+        self.gg.draw()
     def update(self, dt):
         pass
 
@@ -40,9 +45,17 @@ class Battleship(pyglet.window.Window):
         if(symbol == key.W):
             self.ind = (self.ind+1)%5
             self.base.reset(self.ind)
+            self.ggind = (self.ggind+1) % 4
+            print(self.ggind)
+            self.gg = self.model = pySpt.Sprite(pyRes.animation('img/blast/'+str(self.ggind)+'.gif'),x=600,y=50)
         if(symbol == key.S):
             self.ind = (self.ind-1)%5
             self.base.reset(self.ind)
+            self.ggind = (self.ggind-1) % 4
+            print(self.ggind)
+
+            self.gg = self.model = pySpt.Sprite(pyRes.animation('img/blast/'+str(self.ggind)+'.gif'),x=600,y=50)
+
         if symbol == key.B:
             self.base = Base(self.base.model.x, self.base.model.y)
         
@@ -56,13 +69,14 @@ class Battleship(pyglet.window.Window):
         bc.mouseMotion(x, y, self.base)
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        # dispText(10,750,'x : ' + str(x) + ' y : ' + str(y))
-
         bc.mouseDrag(x, y, self.base)
     
     def on_mouse_press(self, x, y, button, modifiers):
         # if button == mouse.LEFT:
         bc.mousePress(x, y, button, self.base)
+        # ind = self.base.pointToPoint(x,y,self.base)
+        # print(ind)
+
     def on_mouse_release(self, x, y, button, modifiers):
         if button == mouse.LEFT:
             bc.mouseRelease(x, y, self.base)
