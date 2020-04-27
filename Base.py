@@ -68,7 +68,7 @@ class Base:
             coordY = round((py-y) / quadSize)
         else:
             coordX = (px-x) // quadSize
-            coordY = (py-y) // quadSize
+            coordY = (py-y) // quadSize         
         return [coordX, coordY]
     @staticmethod
     def pointToPoint(px, py, base, roundUp = False):
@@ -78,3 +78,9 @@ class Base:
         ind = Base.pointToIndex(px, py, base, roundUp)
         return [ ind[0] * quadSize + x, ind[1] * quadSize + y,quadSize]
     
+    @staticmethod
+    def indexToPoint(ind, base):
+        return [
+            base.model.x + ind[0] * base.size // base.gridFactor,
+            base.model.y + ind[1] * base.size // base.gridFactor,
+            ]

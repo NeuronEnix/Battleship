@@ -56,6 +56,8 @@ class Battleship(pyglet.window.Window):
         bc.mouseMotion(x, y, self.base)
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
+        # dispText(10,750,'x : ' + str(x) + ' y : ' + str(y))
+
         bc.mouseDrag(x, y, self.base)
     
     def on_mouse_press(self, x, y, button, modifiers):
@@ -74,3 +76,9 @@ class Battleship(pyglet.window.Window):
         glLoadIdentity()
         glOrtho(0, width, 0, height, -1, 1)
         glMatrixMode(GL_MODELVIEW)
+
+# def dispText(px, py, text):
+#     pyglet.text.Label(text,
+#                           font_name='Times New Roman',
+#                           font_size=10,
+#                           x=10, y=750).draw()

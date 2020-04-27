@@ -27,9 +27,16 @@ def mousePress(px, py,button,  base):
         if ship:
             ship.rotate()
             sMod = ship.model
-            bMod = base.model
             if not base.modelInside(ship):
-                pass
+                index = base.pointToIndex( sMod.x, sMod.y, base )
+                # if ship is not inside base in x direction
+                if not base.pointInside( sMod.x + sMod.width, sMod.y ):
+                    index[0] = base.gridFactor - ship.length
+                else:
+                    index[1] = base.gridFactor - ship.length
+                point = base.indexToPoint(index, base)
+                ship.land(point)
+
 
 
 def mouseRelease(px, py, base):
