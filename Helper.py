@@ -14,12 +14,25 @@ def makeGrid(x, y, gridFactor,width,height=None):
         grid.extend( [x, i, x + width , i] )
     return grid
 
+def getCoordShip(px, py, base, ship):
+    pass
 
-def getCoord(px, py, x, y, baseSize):
-    quadSize = baseSize // gridFactor
-    return [(px-x) // quadSize * quadSize + x,(py-y) // quadSize * quadSize + y,quadSize]
-def drawQuad(mx,my,x,y,baseSize):
-    coord = getCoord(mx, my, x, y, baseSize)
+def getCoord(px, py, base, roundUp = False):
+    quadSize = base.size // gridFactor
+    x = base.model.x
+    y = base.model.y
+    if roundUp:
+        xCoord = round((px-x) / quadSize)
+        yCoord = round((py-y) / quadSize)
+    else:
+        xCoord = (px-x) // quadSize
+        yCoord = (py-y) // quadSize
+
+        
+    return [ xCoord * quadSize + x,yCoord * quadSize + y,quadSize]
+
+def drawQuad(mx,my,base):
+    coord = getCoord(mx, my, base)
     Quad( coord[0], coord[1], coord[2] ).draw()
     
 def pointInside(px, py, model):

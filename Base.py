@@ -44,8 +44,7 @@ class Base:
         if self.highlightQuad:
             drawQuad(
                 self.mouseX,self.mouseY,
-                self.model.x, self.model.y,
-                self.size
+                self
                 )
         for ship in self.ships:
             ship.draw()

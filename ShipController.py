@@ -18,15 +18,21 @@ def mousePress(px, py, base):
 
 def mouseRelease(px, py, base):
     if isinstance(base.movableShip, Ship):
+        ship = base.movableShip
         if base.pointInside(px, py):
-            base.movableShip.land(getCoord(px,py, base.model.x, base.model.y, base.size))
+            ship.land( 
+                getCoord(
+                    ship.model.x, ship.model.y,
+                    base, roundUp = True
+                ) 
+            )
         else:
-            base.movableShip.resetPos()
+            ship.resetPos()
         base.movableShip = True
             
         
                 
-        
+
 
         
     
