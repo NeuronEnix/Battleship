@@ -5,7 +5,7 @@ import pyglet.graphics as pyGra
 from pyglet.gl import GL_LINES 
 
 from Quad import Quad
-from Helper import scaler, makeGrid, drawQuad, pointInside, xyList
+from Helper import scaler, makeGrid, drawQuad, pointInside, xyList, modelInside
 from Ship import Ship, newShips
 
 gridFactor = 10
@@ -16,7 +16,8 @@ class Base:
         self.size = size
         self.visible = True
         self.highlightQuad=False
-        self.movableShip = True
+        self.shipMovable = True
+        self.activeShip = None
         self.mat = [[0]*10]*10
         self.model = pySpt.Sprite(pyRes.animation('img/base/0.gif'),x=posX,y=posY)
         self.model.scale_x = scaler(self.model.width,self.size)
@@ -40,7 +41,8 @@ class Base:
 
     def pointInside(self, px, py):
         return pointInside(px, py, self.model)
-    
+    def objectInside(self, model):
+        return modelInside(model.model, self.model)
     def mouseAt(self, px, py):
         self.mouseX, self.mouseY = px, py
     
@@ -54,4 +56,3 @@ class Base:
                 )
         for ship in self.ships:
             ship.draw()
-

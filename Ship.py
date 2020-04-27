@@ -12,17 +12,17 @@ def newShips(shipList, baseSize, xyList):
     return ships
 
 class Ship:
-    def __init__(self, health, baseSize, posX = 0, posY = 0 ):
+    def __init__(self, length, baseSize, posX = 0, posY = 0 ):
         
         self.width = self.height = baseSize // gridFactor
         self.rotation = random.randint(0,3)      
-        self.length = self.health = health
+        self.length = self.health = length
         self.baseSize = baseSize
         self.visible = True
         self.movable = False
         self.model = self.makeShip(posX,posY)
     
-    def mouseDisplacement(self, px, py):
+    def mouseDistance(self, px, py):
         self.dispX = px - self.model.x
         self.dispY = py - self.model.y
         self.prevX = self.model.x

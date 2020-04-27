@@ -36,12 +36,6 @@ def drawQuad(mx,my,base):
     coord = getCoord(mx, my, base)
     Quad( coord[0], coord[1], coord[2] ).draw()
     
-def pointInside(px, py, model):
-    x, y = model.x, model.y
-    w, h = model.width, model.height
-    if px >= x and px <= x+w and py >= y and py <= y+h:
-        return True
-    return False  
 
 def xyList(base):
     l = [
@@ -49,10 +43,28 @@ def xyList(base):
         [ base.model.y, base.model.y + base.size // 2 ]*2,       
     ]
     l[0][2], l[0][3] = l[0][3], l[0][2]
-    print(l[0],l[1],sep="\n")
     return l        
         
+def moveToRear(obj, objList):
+    ind = objList.index(obj)
+    objList[-1], objList[ind] = objList[ind], objList[-1]
+    return objList
+
+def pointInside(px, py, model):
+    x, y = model.x, model.y
+    w, h = model.width, model.height
+    if px >= x and px <= x+w and py >= y and py <= y+h:
+        return True
+    return False  
+
+def inRange( point, left, right):
+    return left <= point and point <= right
+
+def modelInside(m1, m2):
+    xInside = inRange(m1.x, m2.x, m2.x+ m2.width) and inRange (m1.x + m1.width, m2.x, m2.x+ m2.width)
+    yInside = inRange(m1.y, m2.y, m2.y+ m2.height) and inRange (m1.y + m1.height, m2.y, m2.y+ m2.height)
     
+    return xInside and yInside
 # def dispText(px, py, text):
 #     pyglet.text.Label(text,
 #                           font_name='Times New Roman',

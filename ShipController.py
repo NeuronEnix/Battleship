@@ -1,24 +1,27 @@
+# from pyglet.window import mouse
 from Ship import Ship
-from Helper import getCoord
-def mouseDrag(px, py, base):
+from Helper import getCoord, moveToRear, modelInside
     
-    if isinstance(base.movableShip, Ship):
-        base.movableShip.move(px, py)
-    pass
-def mousePress(px, py, base):
+def mouseDrag(px, py, base):
+    # if base.activeShip:
+    base.activeShip.move(px, py)
 
-    for ship in base.ships:
-        if ship.pointInside(px, py):
-            ship.movable = True
-            ship.mouseDisplacement(px, py)
-            ind = base.ships.index(ship)
-            base.ships[-1],base.ships[ind] = base.ships[ind],base.ships[-1]
-            base.movableShip = ship
-            break
+def mousePress(px, py, base):
+    if base.activeShip is None:
+        for ship in base.ships:
+            if ship.pointInside(px, py):
+                ship.movable = True
+                ship.mouseDistance(px, py)
+                moveToRear(ship, base.ships)
+                base.activeShip = ship
+                break
+    else:
+        base.activeShip.resetPos()
+        base.activeShip = None
 
 def mouseRelease(px, py, base):
-    if isinstance(base.movableShip, Ship):
-        ship = base.movableShip
+    if base.activeShip:
+        ship = base.activeShip
         if base.pointInside(px, py):
             ship.land( 
                 getCoord(
@@ -26,13 +29,10 @@ def mouseRelease(px, py, base):
                     base, roundUp = True
                 ) 
             )
+            if not base.objectInside(ship):
+                ship.resetPos()
         else:
             ship.resetPos()
-        base.movableShip = True
+        base.activeShip = None
             
-        
-                
-
-
-        
     

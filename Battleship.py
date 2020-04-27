@@ -59,8 +59,8 @@ class Battleship(pyglet.window.Window):
         bc.mouseDrag(x, y, self.base)
     
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.LEFT:
-            bc.mousePress(x, y, self.base)
+        # if button == mouse.LEFT:
+        bc.mousePress(x, y, button, self.base)
     def on_mouse_release(self, x, y, button, modifiers):
         if button == mouse.LEFT:
             bc.mouseRelease(x, y, self.base)
