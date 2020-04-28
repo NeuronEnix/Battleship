@@ -6,4 +6,3 @@ if __name__ == "__main__":
     pyglet.clock.schedule_interval(game.update, game.frame_rate)
     game.on_draw()
     pyglet.app.run()
-    

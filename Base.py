@@ -3,7 +3,7 @@ import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
 import pyglet.graphics as pyGra
 from pyglet.gl import GL_LINES 
-
+import model as mdl
 from Quad import Quad
 from Helper import scaler, makeGrid, drawQuad, pointInside, xyList, modelInside
 from Ship import Ship, newShips
@@ -20,26 +20,19 @@ class Base:
         self.shipMovable = True
         self.activeShip = None
         self.mat = [[0]*10]*10
-        self.model = pySpt.Sprite(pyRes.animation('img/base/0.gif'),x=posX,y=posY)
-        self.model.scale_x = scaler(self.model.width,self.size)
-        self.model.scale_y = scaler(self.model.height,self.size)
-                
-        grid = makeGrid(posX,posY,gridFactor,size)
-        self.grid = pyGra.vertex_list(len(grid) // 2,('v2i',grid))
-
+        path = 'img/base/0'
+        self.model = mdl.gif( posX, posY, path, self.size, self.size )
+                        
+        self.grid = mdl.grid( posX, posY, gridFactor, gridFactor, size, size )
         self.ships = newShips( 
                             random.sample(shipLength, len(shipLength)),
                             self.size, xyList(self)
                     )
     def reset(self,ind=1):
-        self.model  = pySpt.Sprite(
-            pyRes.animation('img/base/'+str(ind)+'.gif'),
-            x = self.model.x,
-            y = self.model.y
-        )
-        self.model.scale_x = scaler(self.model.width,self.size)
-        self.model.scale_y = scaler(self.model.height,self.size)
-
+        path = 'img/base/'+str(ind)
+        model = self.model
+        self.model = mdl.gif( model.x, model.y, path, self.size, self.size )
+        
     def pointInside(self, px, py):
         return pointInside(px, py, self.model)
     def modelInside(self, model):

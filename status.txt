@@ -1,3 +1,20 @@
-ship dragble
-ship rotation within the base
-    adding smoke
+MileStone:
+    | - base
+    | - base grid
+    | - ship dragble
+    | - ship rotation within the base
+    x - adding smoke
+    x - adding explosion
+    x - adding sound
+
+Working on:
+    refactoring:
+        created model.py to create all models
+            for now : img, gif, grid
+
+
+Commit:
+    made model.py to create modeles img, gif and grid
+
+Note:
+    Other classes yet to be refactored

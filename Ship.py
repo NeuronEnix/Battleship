@@ -1,7 +1,7 @@
 import random
 import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
-
+import model as mdl
 from Helper import scaler, pointInside, modelOn
 gridFactor = 10
 
@@ -49,8 +49,8 @@ class Ship:
         self.model = self.makeShip(self.model.x, self.model.y)
     
     def makeShip(self, posX, posY):
-        image = pyRes.image('img/ship/'+str(self.length)+str(self.rotation)+'.png')
-        model = pySpt.Sprite(image, x = posX, y = posY)
+        path = 'img/ship/'+str(self.length)+str(self.rotation)
+        model = mdl.img( posX, posY, path )
         if model.width > model.height:
             scaleFactorX, scaleFactorY = self.length, 1
         else:
