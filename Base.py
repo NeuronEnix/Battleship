@@ -21,9 +21,9 @@ class Base:
         self.activeShip = None
         self.mat = [[0]*10]*10
         path = 'img/base/0'
-        self.model = mdl.gif( posX, posY, path, self.size, self.size )
+        self.model = mdl.gif( [posX, posY], path, [self.size, self.size] )
                         
-        self.grid = mdl.grid( posX, posY, gridFactor, gridFactor, size, size )
+        self.grid = mdl.grid( [posX, posY], [gridFactor, gridFactor], [size, size] )
         self.ships = newShips( 
                             random.sample(shipLength, len(shipLength)),
                             self.size, xyList(self)
@@ -31,7 +31,7 @@ class Base:
     def reset(self,ind=1):
         path = 'img/base/'+str(ind)
         model = self.model
-        self.model = mdl.gif( model.x, model.y, path, self.size, self.size )
+        self.model = mdl.gif( [model.x, model.y], path, [self.size, self.size] )
         
     def pointInside(self, px, py):
         return pointInside(px, py, self.model)

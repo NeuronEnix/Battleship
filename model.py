@@ -4,30 +4,33 @@ import pyglet.graphics as pyGra
 
 
 
-def scale( model, newWidth, newHeight ):
-    if newWidth:
-        model.scale_x = newWidth / model.width
-    if newHeight:
-        model.scale_y = newHeight / model.height
+def scale( model, newWH ):
+    if newWH[0]:
+        model.scale_x = newWH[0] / model.width
+    if newWH[1]:
+        model.scale_y = newWH[1] / model.height
     return model
 
-def gif( x, y, path, width = None, height = None ):
+def gif( xy, path, wh = [None, None]):
     obj = pyRes.animation( path + '.gif' )
-    model = pySpt.Sprite( obj, x=x, y=y )
-    model = scale( model, width, height )
+    model = pySpt.Sprite( obj, x=xy[0], y=xy[1] )
+    model = scale( model, wh )
     return model
 
-def img( x, y, path, width = None, height = None ):
+def img( xy, path, wh = [None, None] ):
     obj = pyRes.image( path + '.png')
-    model = pySpt.Sprite( obj, x=x, y=y )
-    model = scale( model, width, height )
+    model = pySpt.Sprite( obj, x=xy[0], y=xy[1] )
+    model = scale( model, wh)
     return model
 
-def grid( x, y, row, col, width, height ):
-    lineXY = []
-    for i in range(x, x + width + 1, width // col):
-        lineXY.extend( [i, y, i , y + height] )
-    for i in range(y, y + height + 1, height // row):
-        lineXY.extend( [x, i, x + width , i] )
-    grid = pyGra.vertex_list(len(lineXY) // 2,('v2i',lineXY))
+def grid( xy, rc, wh ):
+    verts = []
+    for i in range( xy[0], xy[0] + wh[0] + 1, wh[0] // rc[1] ):
+        verts.extend( [i, xy[1], i , xy[1] + wh[1]] )
+    for i in range( xy[1], xy[1] + wh[1] + 1, wh[1] // rc[0] ):
+        verts.extend( [xy[0], i, xy[0] + wh[0] , i] )
+    grid = pyGra.vertex_list( len( verts ) // 2, ( 'v2i', verts ) )
     return grid
+
+# def quad( xy, wh ):
+    

@@ -14,7 +14,12 @@ Working on:
 
 
 Commit:
-    made model.py to create modeles img, gif and grid
-
+    parameter changes in model.py:
+        - x, y to xy->list 
+        - width, height to  wh->list
+        - row, col to  rc->list
+        - argument changes based on params:
+            - ship.py
+            - base.py
 Note:
     Other classes yet to be refactored

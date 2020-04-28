@@ -50,7 +50,7 @@ class Ship:
     
     def makeShip(self, posX, posY):
         path = 'img/ship/'+str(self.length)+str(self.rotation)
-        model = mdl.img( posX, posY, path )
+        model = mdl.img( [posX, posY], path )
         if model.width > model.height:
             scaleFactorX, scaleFactorY = self.length, 1
         else:
