@@ -8,7 +8,10 @@ import pyglet.resource as pyRes
 def scaler(orig, new):
     return new/orig
 
-
+def ifel( Condition, Then, Otherwise ) :
+    if Condition: return Then
+    return Otherwise
+    
 def drawQuad(mx,my,base):
     coord = base.pointToPoint(mx, my, base)
     Quad( coord[0], coord[1], coord[2] ).draw()

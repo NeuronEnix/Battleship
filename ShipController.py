@@ -29,12 +29,23 @@ def mousePress(px, py,button,  base):
             sMod = ship.model
             if not base.modelInside(ship):
                 index = base.pointToIndex( sMod.x, sMod.y, base )
-                # if ship is not inside base in x direction
+                # indext = base.gt.XYToIndex( [sMod.x, sMod.y] )
+                # print(index)
+                # print(indext)
+                # if right part of the ship is not inside base
                 if not base.pointInside( sMod.x + sMod.width, sMod.y ):
                     index[0] = base.gridFactor - ship.length
+                    # indext[1] = base.gt.rc[1] - ship.length
+                    
                 else:
                     index[1] = base.gridFactor - ship.length
+                    # indext[0] = ship.length-1
+                # print(index)
+                # print(indext)
+
                 point = base.indexToPoint(index, base)
+                # print(point)
+                # print(base.gt.indexToXY(indext))
                 ship.land(point)
 
 
@@ -44,10 +55,12 @@ def mouseRelease(px, py, base):
         ship = base.activeShip
         if base.pointInside(px, py):
             ship.land( 
-                base.pointToPoint(
-                    ship.model.x, ship.model.y,
-                    base, roundUp = True
-                ) 
+                # base.pointToPoint(
+                #     ship.model.x, ship.model.y,
+                #     base, roundUp = True
+                # ) 
+                base.gt.XYToXY( [ ship.model.x, ship.model.y ], roundUP = True )
+
             )
             if not base.modelInside(ship):
                 ship.resetPos()

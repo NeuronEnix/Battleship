@@ -7,7 +7,7 @@ import model as mdl
 from Quad import Quad
 from Helper import scaler, makeGrid, drawQuad, pointInside, xyList, modelInside
 from Ship import Ship, newShips
-
+from Grid import Grid
 gridFactor = 10
 shipLength = [2,3,4,5]
 
@@ -24,6 +24,8 @@ class Base:
         self.model = mdl.gif( [posX, posY], path, [self.size, self.size] )
                         
         self.grid = mdl.grid( [posX, posY], [gridFactor, gridFactor], [size, size] )
+        self.gt = Grid( [posX, posY], [gridFactor, gridFactor], [size, size] )
+
         self.ships = newShips( 
                             random.sample(shipLength, len(shipLength)),
                             self.size, xyList(self)
@@ -44,10 +46,12 @@ class Base:
         self.model.draw()
         self.grid.draw(GL_LINES)
         if self.highlightQuad:
-            drawQuad(
-                self.mouseX,self.mouseY,
-                self
-                )
+            xy = self.gt.XYToXY( [ self.mouseX, self.mouseY ] )
+            Quad( xy[0], xy[1], self.gt.subWH[0] ).draw()
+            # drawQuad(
+            #     self.mouseX,self.mouseY,
+            #     self
+            #     )
         for ship in self.ships:
             ship.draw()
 

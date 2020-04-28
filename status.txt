@@ -11,12 +11,15 @@ Working on:
     making GameObject class for inhertance by
         - base
         - ship
-        - grid
+        - grid 
+    gonna refactor:
+        ship and base controller
 
 
 Commit:
-    GameObject.py
-        with baseic methods (unchecked)
-            - pointInside, modelInside, modelOn
+    Grid.py
+        - added model clas 
+        - methods
+            - XYToXY, XYToIndex, IndexToXY...(all working and tested)
 Note:
     Other classes yet to be refactored
