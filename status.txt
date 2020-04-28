@@ -8,18 +8,15 @@ MileStone:
     x - adding sound
 
 Working on:
-    refactoring:
-        created model.py to create all models
-            for now : img, gif, grid
+    making GameObject class for inhertance by
+        - base
+        - ship
+        - grid
 
 
 Commit:
-    parameter changes in model.py:
-        - x, y to xy->list 
-        - width, height to  wh->list
-        - row, col to  rc->list
-        - argument changes based on params:
-            - ship.py
-            - base.py
+    GameObject.py
+        with baseic methods (unchecked)
+            - pointInside, modelInside, modelOn
 Note:
     Other classes yet to be refactored
