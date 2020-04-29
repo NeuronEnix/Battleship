@@ -1,83 +1,74 @@
-import random
-import pyglet.sprite as pySpt
-import pyglet.resource as pyRes
-import pyglet.graphics as pyGra
-from pyglet.gl import GL_LINES 
 import model as mdl
-from Quad import Quad
-from Helper import scaler, makeGrid, drawQuad, pointInside, xyList, modelInside
-from Ship import Ship, newShips
+from GameObject import GameObject
 from Grid import Grid
-gridFactor = 10
-shipLength = [2,3,4,5]
+from Ship import Ship, Length
 
-class Base:
-    def __init__(self, posX, posY, size=600):
-        self.gridFactor = gridFactor
-        self.size = size
-        self.visible = True
-        self.highlightQuad=False
-        self.shipMovable = True
-        self.activeShip = None
-        self.mat = [[0]*10]*10
-        path = 'img/base/0'
-        self.model = mdl.gif( [posX, posY], path, [self.size, self.size] )
-                        
-        self.grid = mdl.grid( [posX, posY], [gridFactor, gridFactor], [size, size] )
-        self.gt = Grid( [posX, posY], [gridFactor, gridFactor], [size, size] )
+path = 'img/base/0' 
+shipCount = 4
 
-        self.ships = newShips( 
-                            random.sample(shipLength, len(shipLength)),
-                            self.size, xyList(self)
-                    )
+class Base( GameObject ):
+    def __init__( self, xy, wh, rc = [10,10] ) :
+        gif = mdl.gif( xy, path, wh )
+        super().__init__( gif )
+        
+        self.grid = Grid( xy, rc, wh, mat = True )
+        self.ships = self.newShips()
+        self.activeShip  = None
+    def mousePress( self, xy, button ) :
+        if self.inside( xy ) :
+            for ship in self.ships :
+                if ship.mousePress( xy ) :
+                    self.activeShip = ship
+                    break
+                
+    def mouseDrag( self, xy, button ) :
+        if self.inside( xy ) :
+            if self.activeShip :
+                self.activeShip.mouseDrag( xy )
+
+    def mouseRelease( self, xy, button ) :
+        if self.activeShip :
+            if button == 'r':
+                self.activeShip.rotate()
+            self.rePosition( self.activeShip )
+            self.activeShip = None
+            
+    def mouseOn( self, xy) :
+        if self.inside( xy ):
+            return True
+        return False
+
+    def draw( self ) :
+        if self.visible :
+            super().draw()
+            self.grid.draw()
+            for ship in self.ships :
+                ship.draw()            
+
+    def rePosition( self, ship ):
+        ship.move( self.grid.XYToXY( ship.xy, roundUP = True ) )
+        if ship.inside( self ) == False :
+            # if ship is outside horizontally
+            if ship.rotation % 2:
+                newInd = [ self.grid.XYToIndex( ship.xy )[0], self.grid.rc[1] - ship.length ]
+            else :
+                newInd = [ ship.length - 1, self.grid.XYToIndex( ship.xy )[1] ]
+            ship.move( self.grid.indexToXY( newInd ) )
+
+    def newShips( self ) :
+        # xFactor is for arranging the ship and round() will arrange neeatly
+        ships = []
+        xFactor = self.grid.rc[0] / shipCount
+        for id in range( shipCount ) :
+            ships.append( 
+                Ship(
+                    self.grid.indexToXY( [ round(id * xFactor), 0 ] ),
+                    [ Length[ id ] * self.grid.subWH[0], self.grid.subWH[1] ],
+                    id
+                )
+            )
+        return ships
+
     def reset(self,ind=1):
         path = 'img/base/'+str(ind)
-        model = self.model
-        self.model = mdl.gif( [model.x, model.y], path, [self.size, self.size] )
-        
-    def pointInside(self, px, py):
-        return pointInside(px, py, self.model)
-    def modelInside(self, model):
-        return modelInside(model.model, self.model)
-    def mouseAt(self, px, py):
-        self.mouseX, self.mouseY = px, py
-    
-    def draw(self):
-        self.model.draw()
-        self.grid.draw(GL_LINES)
-        if self.highlightQuad:
-            xy = self.gt.XYToXY( [ self.mouseX, self.mouseY ] )
-            Quad( xy[0], xy[1], self.gt.subWH[0] ).draw()
-            # drawQuad(
-            #     self.mouseX,self.mouseY,
-            #     self
-            #     )
-        for ship in self.ships:
-            ship.draw()
-
-    @staticmethod
-    def pointToIndex(px, py, base, roundUp = False):
-        quadSize = base.size // base.gridFactor
-        x = base.model.x
-        y = base.model.y
-        if roundUp:
-            coordX = round((px-x) / quadSize)
-            coordY = round((py-y) / quadSize)
-        else:
-            coordX = (px-x) // quadSize
-            coordY = (py-y) // quadSize         
-        return [coordX, coordY]
-    @staticmethod
-    def pointToPoint(px, py, base, roundUp = False):
-        quadSize = base.size // gridFactor
-        x = base.model.x
-        y = base.model.y
-        ind = Base.pointToIndex(px, py, base, roundUp)
-        return [ ind[0] * quadSize + x, ind[1] * quadSize + y,quadSize]
-    
-    @staticmethod
-    def indexToPoint(ind, base):
-        return [
-            base.model.x + ind[0] * base.size // base.gridFactor,
-            base.model.y + ind[1] * base.size // base.gridFactor,
-            ]
+        self.model = mdl.gif( self.xy, path, self.grid.wh )

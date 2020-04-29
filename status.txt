@@ -3,23 +3,26 @@ MileStone:
     | - base grid
     | - ship dragble
     | - ship rotation within the base
+    x - adding target
     x - adding smoke
     x - adding explosion
     x - adding sound
+    x - adding video
 
 Working on:
-    making GameObject class for inhertance by
-        - base
-        - ship
-        - grid 
-    gonna refactor:
-        ship and base controller
+    target
 
 
 Commit:
-    Grid.py
-        - added model clas 
-        - methods
-            - XYToXY, XYToIndex, IndexToXY...(all working and tested)
+    Renewed Base.py, Ship.py
+    removed controllers
+
 Note:
-    Other classes yet to be refactored
+    
+
+Reference:
+def dispText(px, py, text):
+    pyglet.text.Label(text,
+                          font_name='Times New Roman',
+                          font_size=10,
+                          x=10, y=750).draw()

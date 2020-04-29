@@ -2,8 +2,6 @@ import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
 import pyglet.graphics as pyGra
 
-
-
 def scale( model, newWH ):
     if newWH[0]:
         model.scale_x = newWH[0] / model.width
@@ -31,6 +29,3 @@ def grid( xy, rc, wh ):
         verts.extend( [xy[0], i, xy[0] + wh[0] , i] )
     grid = pyGra.vertex_list( len( verts ) // 2, ( 'v2i', verts ) )
     return grid
-
-# def quad( xy, wh ):
-    
