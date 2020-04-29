@@ -9,9 +9,8 @@ class Ship( GameObject ):
         
         self.lb, self.id ,self.rotation = lb, id, rotation
         self.length = self.health = Length[ self.id ]
-        self.visible = True
         
-        self.model = self.newModel( xy )
+        super().__init__( self.newModel( xy ) )
 
     def rotate( self, clockwise = True) :
         if clockwise    : self.rotation += 1

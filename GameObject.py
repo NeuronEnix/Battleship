@@ -6,9 +6,10 @@ def chooseModel(obj):
     return obj.model
 
 class GameObject:
-    def __init__( self,model = None ) :
+    
+    def __init__( self,model = None, visible = True ) :
         self.model = model
-        self.visible = True
+        self.visible = visible
 
     def inside( self, val ) : 
         m0 = chooseModel(self)
@@ -32,6 +33,7 @@ class GameObject:
         if self.visible:
             self.model.draw( )   
 
+
     def g_xy( self ):
         m = chooseModel(self)
         return [ m.x, m.y ]
@@ -39,3 +41,12 @@ class GameObject:
         m = chooseModel(self)
         m.x, m.y = xy[0], xy[1]
     xy = property( g_xy, s_xy)
+    
+    def g_wh( self ):
+        m = chooseModel(self)
+        return [ m.width, m.height ]
+    def s_wh( self, wh ) :
+        m = chooseModel(self)
+        m.width, m.height = wh[0], wh[1]
+    wh = property( g_wh, s_wh)
+        

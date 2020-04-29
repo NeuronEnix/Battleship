@@ -3,11 +3,15 @@ import pyglet.resource as pyRes
 import pyglet.graphics as pyGra
 
 def scale( model, newWH ):
-    if newWH[0]:
-        model.scale_x = newWH[0] / model.width
-    if newWH[1]:
-        model.scale_y = newWH[1] / model.height
+    if newWH[0] :   model.scale_x = newWH[0] / model.width
+    if newWH[1] :   model.scale_y = newWH[1] / model.height
     return model
+
+def objAnchorXY( obj ) :
+    obj.anchor_x = obj.width // 2  
+    obj.anchor_y = obj.height // 2
+    return obj
+
 
 def gif( xy, path, wh = [None, None]):
     obj = pyRes.animation( path + '.gif' )
@@ -15,8 +19,10 @@ def gif( xy, path, wh = [None, None]):
     model = scale( model, wh )
     return model
 
-def img( xy, path, wh = [None, None] ):
+def img( xy, path, wh = [None, None], anchorXY = False ):
     obj = pyRes.image( path + '.png')
+    if anchorXY:
+        obj = objAnchorXY( obj )
     model = pySpt.Sprite( obj, x=xy[0], y=xy[1] )
     model = scale( model, wh)
     return model

@@ -17,7 +17,7 @@ class Grid(GameObject):
         self._model = Model( xy, wh )
         # self.xy = xy
         self.rc = rc
-        self.wh = wh
+        # self.wh = wh
         self.subWH = [ wh[1] // rc[1], wh[0] // rc[0] ]
         if mat:
             self.mat = [ [0] * rc[1] ] * rc[0]

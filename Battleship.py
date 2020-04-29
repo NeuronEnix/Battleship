@@ -1,6 +1,6 @@
 import pyglet as py
 from pyglet.window import mouse, key
-from Base import Base
+from Player import Player
 class Battleship(py.window.Window):
     def __init__(self, *args, **kwargs):
         #Window Configuration
@@ -11,52 +11,53 @@ class Battleship(py.window.Window):
 
         #Default Configuration
         py.gl.glClearColor(0.0,0.0,0.0,1.0)
-        self.base = Base( [300, 50], [600,600])
+        self.player = Player( )
         self.ind = 0
 
     def on_draw(self):
         self.clear()
         self.fps_display.draw()
-        self.base.draw()
+        self.player.draw()
 
     def update(self, dt):
         pass
 
 # Mouse
     def on_mouse_motion(self,x, y, dx, dy):
-        pass
-    
+        self.player.mouseMotion( [x, y] )
+
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
         if button == mouse.LEFT : 
-            self.base.mouseDrag( [x, y], 'l' )    
+            self.player.mouseDrag( [x, y], 'l' )    
         if button == mouse.RIGHT : 
             pass
             
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT : 
-            self.base.mousePress( [x, y], 'l' )    
+            self.player.mousePress( [x, y], 'l' )    
         if button == mouse.RIGHT : 
-            self.base.mousePress( [x, y], 'r' )    
+            self.player.mousePress( [x, y], 'r' )    
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == mouse.LEFT : 
-            self.base.mouseRelease( [x, y], 'l' )    
+            self.player.mouseRelease( [x, y], 'l' )    
         if button == mouse.RIGHT : 
-            self.base.mouseRelease( [x, y], 'r' )    
+            self.player.mouseRelease( [x, y], 'r' )    
  #keys
     def on_key_press(self, symbol, modifiers):
         if(symbol == key.W):
-            self.ind = (self.ind+1)%5
-            self.base.reset(self.ind)
+            self.player.base._next( )
         if(symbol == key.S):
-            self.ind = (self.ind-1)%5
-            self.base.reset(self.ind)
-        if symbol == key.B:
-            self.base = Base(self.base.model.x, self.base.model.y)
+            self.player.base._prev( )
+
+        if(symbol == key.Q):
+            self.player.base.crosshair._next( )
+        if(symbol == key.A):
+            self.player.base.crosshair._prev( )
+
         
     def on_key_release(self, symbol, modifiers):
-        if(symbol == key.Z):
-            self.base.ships[0].rotate()
+        pass            
        
     def on_resize(self, width, height):
         width = max(1, width)

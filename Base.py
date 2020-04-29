@@ -2,29 +2,43 @@ import model as mdl
 from GameObject import GameObject
 from Grid import Grid
 from Ship import Ship, Length
+from Crosshair import Crosshair
 
-path = 'img/base/0' 
+basePath = 'img/base/' 
 shipCount = 4
 
 class Base( GameObject ):
     def __init__( self, xy, wh, rc = [10,10] ) :
-        gif = mdl.gif( xy, path, wh )
+        gif = mdl.gif( xy, basePath + '0', wh )
         super().__init__( gif )
         
         self.grid = Grid( xy, rc, wh, mat = True )
+        self.crosshair = Crosshair( xy , self.grid.subWH )
+        
         self.ships = self.newShips()
         self.activeShip  = None
+
+        ###########################
+        self._ID, self._maxID = 0,3
+        
+    def mouseMotion( self, xy ):
+        if self.inside( xy ):
+            self.crosshair.vis( self.grid.XYToXY( xy ) )
+        else:
+            self.crosshair.inVis( )
+
+    def mouseDrag( self, xy, button ) :
+        if self.inside( xy ) :
+            self.crosshair.inVis( )
+            if self.activeShip :
+                self.activeShip.mouseDrag( xy )
+    
     def mousePress( self, xy, button ) :
         if self.inside( xy ) :
             for ship in self.ships :
                 if ship.mousePress( xy ) :
                     self.activeShip = ship
                     break
-                
-    def mouseDrag( self, xy, button ) :
-        if self.inside( xy ) :
-            if self.activeShip :
-                self.activeShip.mouseDrag( xy )
 
     def mouseRelease( self, xy, button ) :
         if self.activeShip :
@@ -43,8 +57,10 @@ class Base( GameObject ):
             super().draw()
             self.grid.draw()
             for ship in self.ships :
-                ship.draw()            
+                ship.draw()    
+            self.crosshair.draw()        
 
+    
     def rePosition( self, ship ):
         ship.move( self.grid.XYToXY( ship.xy, roundUP = True ) )
         if ship.inside( self ) == False :
@@ -68,7 +84,20 @@ class Base( GameObject ):
                 )
             )
         return ships
-
-    def reset(self,ind=1):
-        path = 'img/base/'+str(ind)
+     
+    #############################
+    # self._ID, self._maxID = 0,1
+    #############################
+    def _roll( self ):
+        self._ID %=self._maxID
+        path = basePath + str(self._ID)
         self.model = mdl.gif( self.xy, path, self.grid.wh )
+    def _next( self ):
+        self._ID += 1
+        self._roll( )
+    def _prev( self ):
+        self._ID -= 1
+        self._roll( )
+
+        
+        

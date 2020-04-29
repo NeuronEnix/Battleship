@@ -3,26 +3,54 @@ MileStone:
     | - base grid
     | - ship dragble
     | - ship rotation within the base
-    x - adding target
+    | - adding crosshair
     x - adding smoke
     x - adding explosion
     x - adding sound
     x - adding video
 
 Working on:
-    target
+    creating Player 
 
 
 Commit:
-    Renewed Base.py, Ship.py
-    removed controllers
+    added crosshair
 
 Note:
     
 
 Reference:
+
 def dispText(px, py, text):
     pyglet.text.Label(text,
                           font_name='Times New Roman',
                           font_size=10,
                           x=10, y=750).draw()
+
+
+
+Mouse Pointer :
+    Defaults:
+        cursor = window.get_system_mouse_cursor(win.CURSOR_HELP)
+        window.set_mouse_cursor(cursor)
+    Custom:
+        image = pyglet.image.load('cursor.png')
+        cursor = pyglet.window.ImageMouseCursor(image, 16, 8)
+        window.set_mouse_cursor(cursor)
+
+
+    #############################
+    #self._ID, self._maxID = 0,5
+    #############################
+    def _roll( self ):
+        self._ID %=self._maxID
+        path =          + str(self._ID)
+
+        self.model = 
+
+    def _next( self ):
+        self._ID += 1
+        self._roll( )
+    def _prev( self ):
+        self._ID -= 1
+        self._roll( )
