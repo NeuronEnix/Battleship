@@ -1,48 +1,42 @@
 import model as mdl
-from GameObject import GameObject
 
-crosshairPath = 'img/crosshair/'
+from GameModel import GameModel
+from Global import crosshairPath as path
 
-class Crosshair( GameObject ) :
-    def __init__( self, xy, wh ):
-        img = mdl.img( xy, crosshairPath + '0', wh, anchorXY = True )
-        # img = mdl.gif( xy, crosshairPath + '4', wh )
-        super().__init__( img , visible=False)
-        self.anchorXY = [ self.model.width // 2, self.model.height // 2 ]
+class Crosshair( GameModel ) :
+    def __init__( self, xy, wh):
+        img = mdl.img( xy, path + '0', wh, anchorXY = True )
+        super().__init__( xy, wh, model = img , visible=False)
+        self.anchorXY = [ self.wh[0] // 2, self.wh[1] // 2 ]
         self.degree = 0
         self.rotationSpeed = 1
         self._ID, self._maxID = 0,3
 
     def vis( self, xy ) :
+        xy = list(xy)
         xy[0] += self.anchorXY[0]
         xy[1] += self.anchorXY[1]
-        
         self.xy = xy
-        self.visible = True
-    
-    def inVis( self ) :
-        self.visible = False
-        
+        super().vis()
+
     def rotation( self ):
         self.degree += self.rotationSpeed
         self.degree %= 360
-        return self.degree        
-    def draw( self ):
-        if self.visible :
-            super().draw( )
+        return self.degree
             
-            self.model.rotation += 3
-        
-        
-        
+    def draw( self ):
+        super().draw()
+        self.model.rotation += 3
+
+
     ############################
     # self._ID, self._maxID = 0,5
     ############################
     def _roll( self ):
         self._ID %=self._maxID
-        path =crosshairPath+ str(self._ID)
-        print('crosshair : ' , self._ID)
-        self.model = mdl.img( self.xy, path, self.wh, anchorXY = True )
+        print('Crosshair : ' , self._ID)
+        img = mdl.img( self.xy, path + str(self._ID), self.wh, anchorXY = True )
+        super().__init__( self.xy, self.wh, model = img )
 
 
     def _next( self ):

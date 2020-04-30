@@ -11,14 +11,16 @@ MileStone:
     x - adding video
 
 Working on:
+    - Creating Grid <- GameModel
     - missfire
     - creating Player 
     - explosion sequence when the ship is
       completly damaged
 
 Commit:
-    - added explosion
-    - added smoke
+    - Grid <- GameModel
+    - GameModel <- Base
+    - GameModel <- Ship
 
 Note:
     

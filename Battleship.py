@@ -28,7 +28,7 @@ class Battleship(py.window.Window):
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
         if button == mouse.LEFT : 
-            self.player.mouseDrag( [x, y], 'l' )    
+            self.player.mouseDrag( [x, y], 'l' ) 
         if button == mouse.RIGHT : 
             pass
             
@@ -47,11 +47,13 @@ class Battleship(py.window.Window):
     def on_key_press(self, symbol, modifiers):
         if(symbol == key.W):
             self.player.base._next( )
+            
         if(symbol == key.S):
             self.player.base._prev( )
 
         if(symbol == key.Q):
             self.player.base.crosshair._next( )
+
         if(symbol == key.A):
             self.player.base.crosshair._prev( )
 

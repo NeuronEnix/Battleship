@@ -1,19 +1,20 @@
 import model as mdl
-from GameObject import GameObject
-from Grid import Grid
-from Ship import Ship, Length
+from pyglet.gl import GL_LINES
+from GameModel import GameModel
+from Ship import Ship
+from Global import shipLength as Length, basePath as path
 from Crosshair import Crosshair
+shipCount = len(Length)
 
-basePath = 'img/base/' 
-shipCount = 4
-
-class Base( GameObject ):
+class Base( GameModel ):
     def __init__( self, xy, wh, rc = [10,10] ) :
-        gif = mdl.gif( xy, basePath + '0', wh )
-        super().__init__( gif )
         
-        self.grid = Grid( xy, rc, wh, mat = True )
-        self.crosshair = Crosshair( xy , self.grid.subWH )
+        gif = mdl.gif( xy, path + '0', wh )
+        super().__init__( xy, wh, rc, gif )
+        
+        self.grid = mdl.grid( xy, rc, wh )
+        
+        self.crosshair = Crosshair( xy , self.subWH )
         
         self.ships = self.newShips()
         self.activeShip  = None
@@ -23,7 +24,7 @@ class Base( GameObject ):
         
     def mouseMotion( self, xy ):
         if self.inside( xy ):
-            self.crosshair.vis( self.grid.XYToXY( xy ) )
+            self.crosshair.vis( self.XYToXY( xy ) )
         else:
             self.crosshair.inVis( )
 
@@ -53,33 +54,33 @@ class Base( GameObject ):
         return False
 
     def draw( self ) :
+        super().draw()
         if self.visible :
-            super().draw()
-            self.grid.draw()
+            self.grid.draw(GL_LINES)
             for ship in self.ships :
                 ship.draw()    
             self.crosshair.draw()        
 
     
     def rePosition( self, ship ):
-        ship.move( self.grid.XYToXY( ship.xy, roundUP = True ) )
+        ship.move( self.XYToXY( ship.xy, roundUP = True ) )
         if ship.inside( self ) == False :
             # if ship is outside horizontally
-            if ship.orientation % 2:
-                newInd = [ self.grid.XYToIndex( ship.xy )[0], self.grid.rc[1] - ship.length ]
+            if ship.horizontal() :
+                newInd = [ self.XYToIndex( ship.xy )[0], self.rc[1] - ship.length ]
             else :
-                newInd = [ ship.length - 1, self.grid.XYToIndex( ship.xy )[1] ]
-            ship.move( self.grid.indexToXY( newInd ) )
+                newInd = [ ship.length - 1, self.XYToIndex( ship.xy )[1] ]
+            ship.move( self.indexToXY( newInd ) )
 
     def newShips( self ) :
         # xFactor is for arranging the ship and round() will arrange neeatly
         ships = []
-        xFactor = self.grid.rc[0] / shipCount
+        xFactor = self.rc[0] / shipCount
         for id in range( shipCount ) :
             ships.append( 
                 Ship(
-                    self.grid.indexToXY( [ round(id * xFactor), 0 ] ),
-                    [ Length[ id ] * self.grid.subWH[0], self.grid.subWH[1] ],
+                    self.indexToXY( [ round(id * xFactor), 0 ] ),
+                    [ Length[ id ] * self.subWH[0], self.subWH[1] ],
                     id
                 )
             )
@@ -90,14 +91,11 @@ class Base( GameObject ):
     #############################
     def _roll( self ):
         self._ID %=self._maxID
-        path = basePath + str(self._ID)
-        self.model = mdl.gif( self.xy, path, self.grid.wh )
+        self.model = mdl.gif( self.xy, path + str(self._ID), self.wh )
     def _next( self ):
         self._ID += 1
         self._roll( )
     def _prev( self ):
         self._ID -= 1
         self._roll( )
-
-        
         
