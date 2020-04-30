@@ -11,7 +11,7 @@ class Grid :
         self._rc = list(rc)
         self._grid = self.newGrid()
     def newGrid( self ) :
-        return mdl.grid( self._xy, self._rc, self._wh )
+        return mdl.grid( self._xy, self._wh, self._rc )
     
     def indexToXY( self, ind ) :
         ind = list( ind )

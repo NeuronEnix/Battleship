@@ -5,20 +5,20 @@ from Ship import Ship
 from Global import shipLength as Length, basePath as path
 from Crosshair import Crosshair
 shipCount = len(Length)
-
+def firstMissFireRotation( mfm ) :
+    return mfm[ next( iter( mfm ) ) ].model.rotation
 class Base( GameModel ):
     def __init__( self, xy, wh, rc = [10,10] ) :
         
         gif = mdl.gif( xy, path + '0', wh )
         super().__init__( xy, wh, rc, gif )
         
-        self.grid = mdl.grid( xy, rc, wh )
+        self.grid = mdl.grid( xy, wh, rc )
         
         self.crosshair = Crosshair( xy , self.subWH )
-        
         self.ships = self.newShips()
         self.activeShip  = None
-
+        self.missFireModel = {}
         ###########################
         self._ID, self._maxID = 0,3
         
@@ -26,7 +26,7 @@ class Base( GameModel ):
         if self.inside( xy ):
             self.crosshair.vis( self.XYToXY( xy ) )
         else:
-            self.crosshair.inVis( )
+            self.crosshair.inVis()
 
     def mouseDrag( self, xy, button ) :
         if self.inside( xy ) :
@@ -40,7 +40,26 @@ class Base( GameModel ):
                 if ship.mousePress( xy ) :
                     self.activeShip = ship
                     break
-
+            # if missed all ship
+            else: 
+                self.missFire( xy )
+    def missFire( self, xy ) :
+        xy = self.XYToXY( xy )
+        wh = self.subWH
+        i = 30
+        scale_x = wh[0] * i // 100
+        scale_y = wh[1] * i // 100
+        wh[0] -= scale_x                        
+        wh[1] -= scale_y                        
+        xy[0] += scale_x // 2                       
+        xy[1] += scale_y // 2  
+        if str(xy) in self.missFireModel == False:
+            print('there')
+        else:   
+            self.missFireModel[ str(xy) ] = Crosshair( xy , wh, 1 )
+            self.missFireModel[ str(xy) ].model.rotation = firstMissFireRotation( self.missFireModel) 
+            self.missFireModel[ str(xy) ].vis( xy )
+        
     def mouseRelease( self, xy, button ) :
         if self.activeShip :
             if button == 'r':
@@ -57,6 +76,8 @@ class Base( GameModel ):
         super().draw()
         if self.visible :
             self.grid.draw(GL_LINES)
+            for model in self.missFireModel.values() :
+                model.draw()
             for ship in self.ships :
                 ship.draw()    
             self.crosshair.draw()        

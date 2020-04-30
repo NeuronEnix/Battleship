@@ -11,7 +11,7 @@ class Battleship(py.window.Window):
 
         #Default Configuration
         py.gl.glClearColor(0.0,0.0,0.0,1.0)
-        self.player = Player( )
+        self.player = Player()
         self.ind = 0
 
     def on_draw(self):
@@ -46,17 +46,16 @@ class Battleship(py.window.Window):
  #keys
     def on_key_press(self, symbol, modifiers):
         if(symbol == key.W):
-            self.player.base._next( )
+            self.player.base._next()
             
         if(symbol == key.S):
-            self.player.base._prev( )
+            self.player.base._prev()
 
         if(symbol == key.Q):
-            self.player.base.crosshair._next( )
+            self.player.base.crosshair._next()
 
         if(symbol == key.A):
-            self.player.base.crosshair._prev( )
-
+            self.player.base.crosshair._prev()
         
     def on_key_release(self, symbol, modifiers):
         pass            

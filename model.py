@@ -26,7 +26,7 @@ def img( xy, path, wh = [None, None], anchorXY = False ):
     model = scale( model, wh)
     return model
 
-def grid( xy, rc, wh ):
+def grid( xy, wh, rc ):
     verts = [
         xy[0], xy[1],               xy[0]+wh[0], xy[1],
         xy[0]+wh[0] ,xy[1],         xy[0]+wh[0], xy[1]+wh[1],

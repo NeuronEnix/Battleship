@@ -1,5 +1,5 @@
+from Global import baseData
 from Base import Base
-baseData = [[300, 50], [600,600], [10,10]]
 class Player:
     def __init__( self, baseData = baseData ) :
         self.base = Base( baseData[0],baseData[1],baseData[2] )

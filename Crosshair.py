@@ -4,9 +4,10 @@ from GameModel import GameModel
 from Global import crosshairPath as path
 
 class Crosshair( GameModel ) :
-    def __init__( self, xy, wh):
-        img = mdl.img( xy, path + '0', wh, anchorXY = True )
-        super().__init__( xy, wh, model = img , visible=False)
+    def __init__( self, xy, wh, id = 0 ):
+        
+        img = mdl.img( xy, path + str( id ) , wh, anchorXY = True )
+        super().__init__( xy, wh, model = img , visible = False )
         self.anchorXY = [ self.wh[0] // 2, self.wh[1] // 2 ]
         self.degree = 0
         self.rotationSpeed = 1
@@ -18,15 +19,11 @@ class Crosshair( GameModel ) :
         xy[1] += self.anchorXY[1]
         self.xy = xy
         super().vis()
-
-    def rotation( self ):
-        self.degree += self.rotationSpeed
-        self.degree %= 360
-        return self.degree
             
     def draw( self ):
         super().draw()
-        self.model.rotation += 3
+        if self.visible :
+            self.model.rotation += 3
 
 
     ############################

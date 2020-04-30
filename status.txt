@@ -7,23 +7,19 @@ MileStone:
     | - adding smoke
     | - adding explosion
     | - adding missfire
+    | - mass explosion
+    x - Scaling all models based on xy and wh
     x - adding sound
     x - adding video
 
 Working on:
-    - Creating Grid <- GameModel
-    - missfire
+    - Scaling Objects
     - creating Player 
-    - explosion sequence when the ship is
-      completly damaged
 
 Commit:
-    - Grid <- GameModel
-    - GameModel <- Base
-    - GameModel <- Ship
-
-Note:
-    
+    - Explosion.py
+    - Added missfire
+    - Ship.py refactor
 
 Reference:
 
