@@ -4,17 +4,21 @@ MileStone:
     | - ship dragble
     | - ship rotation within the base
     | - adding crosshair
-    x - adding smoke
-    x - adding explosion
+    | - adding smoke
+    | - adding explosion
+    | - adding missfire
     x - adding sound
     x - adding video
 
 Working on:
-    creating Player 
-
+    - missfire
+    - creating Player 
+    - explosion sequence when the ship is
+      completly damaged
 
 Commit:
-    added crosshair
+    - added explosion
+    - added smoke
 
 Note:
     

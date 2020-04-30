@@ -65,7 +65,7 @@ class Base( GameObject ):
         ship.move( self.grid.XYToXY( ship.xy, roundUP = True ) )
         if ship.inside( self ) == False :
             # if ship is outside horizontally
-            if ship.rotation % 2:
+            if ship.orientation % 2:
                 newInd = [ self.grid.XYToIndex( ship.xy )[0], self.grid.rc[1] - ship.length ]
             else :
                 newInd = [ ship.length - 1, self.grid.XYToIndex( ship.xy )[1] ]

@@ -6,11 +6,12 @@ crosshairPath = 'img/crosshair/'
 class Crosshair( GameObject ) :
     def __init__( self, xy, wh ):
         img = mdl.img( xy, crosshairPath + '0', wh, anchorXY = True )
+        # img = mdl.gif( xy, crosshairPath + '4', wh )
         super().__init__( img , visible=False)
         self.anchorXY = [ self.model.width // 2, self.model.height // 2 ]
         self.degree = 0
         self.rotationSpeed = 1
-        self._ID, self._maxID = 0,4
+        self._ID, self._maxID = 0,3
 
     def vis( self, xy ) :
         xy[0] += self.anchorXY[0]
