@@ -1,8 +1,9 @@
 import model as mdl
+import media as mdi
 from pyglet.gl import GL_LINES
 from GameModel import GameModel
 from Ship import Ship
-from Global import shipLength as Length, basePath as path
+from Global import shipLength as Length, basePath as path, explosionAudioPath
 from Crosshair import Crosshair
 shipCount = len(Length)
 def firstMissFireRotation( mfm ) :
@@ -19,6 +20,7 @@ class Base( GameModel ):
         self.ships = self.newShips()
         self.activeShip  = None
         self.missFireModel = {}
+        self.missFireAudio = mdi.aud( explosionAudioPath + '2' )
         ###########################
         self._ID, self._maxID = 0,3
         
@@ -59,6 +61,7 @@ class Base( GameModel ):
             self.missFireModel[ str(xy) ] = Crosshair( xy , wh, 1 )
             self.missFireModel[ str(xy) ].model.rotation = firstMissFireRotation( self.missFireModel) 
             self.missFireModel[ str(xy) ].vis( xy )
+            self.missFireAudio.play()
         
     def mouseRelease( self, xy, button ) :
         if self.activeShip :

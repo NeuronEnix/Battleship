@@ -1,6 +1,7 @@
 import model as mdl
 from GameModel import GameModel
-from Global import explosionPath, smokePath
+from Global import explosionPath, smokePath, explosionAudioPath
+import media as mdi
 import time
 
 def explosionDuration() :
@@ -12,12 +13,14 @@ class Explosion( GameModel ) :
         self.explodedInd = set()
         self.explosionList = []
         self.smokeList = []
+        self.explosionAudio = mdi.aud( explosionAudioPath + '0' )
+        self.massExplosionAudio = mdi.aud( explosionAudioPath + '1' )
 
     def explodeAt( self, xy ) :
         ind = str( self.XYToIndex( xy ) )
         if ind in self.explodedInd:
             return False
-        
+        self.explosionAudio.play()
         self.explodedInd.add( ind )
         
         xy = self.XYToXY( xy )
@@ -39,6 +42,7 @@ class Explosion( GameModel ) :
             for j in range( self.rc[1] ) :
                 xy = self.indexToXY( [i,j] )
                 self.explosionList.append(  self.newExplosion( xy ) )
+        self.massExplosionAudio.play()
     
     def draw( self ) :
         for smoke in self.smokeList :

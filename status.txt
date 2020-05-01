@@ -8,8 +8,8 @@ MileStone:
     | - adding explosion
     | - adding missfire
     | - mass explosion
+    | - adding sound
     x - Scaling all models based on xy and wh
-    x - adding sound
     x - adding video
 
 Working on:
@@ -17,10 +17,10 @@ Working on:
     - creating Player 
 
 Commit:
-    - Explosion.py
-    - Added missfire
-    - Ship.py refactor
-
+    - added bg audio,
+    - added explosion and missfire audio
+    - created media.py ( only audio is present )
+    - modification in ship.py
 Reference:
 
 def dispText(px, py, text):

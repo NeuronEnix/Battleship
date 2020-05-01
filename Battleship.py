@@ -1,6 +1,7 @@
 import pyglet as py
 from pyglet.window import mouse, key
 from Player import Player
+
 class Battleship(py.window.Window):
     def __init__(self, *args, **kwargs):
         #Window Configuration
@@ -56,6 +57,11 @@ class Battleship(py.window.Window):
 
         if(symbol == key.A):
             self.player.base.crosshair._prev()
+
+        if(symbol == key.E):
+            pass
+        if(symbol == key.D):
+            pass
         
     def on_key_release(self, symbol, modifiers):
         pass            

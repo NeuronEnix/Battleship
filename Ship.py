@@ -62,5 +62,5 @@ class Ship( GameModel ):
         shipPath  = path +  str(self.id) + str(self.orientation)
         model = mdl.img( xy, shipPath , wh )
         super().__init__( xy, wh, rc, model , visible = False )
-
+        self.health = self.length
         self.explosion = Explosion( xy, wh, rc )
