@@ -7,20 +7,22 @@ import pyglet.text as pyTxt
 
 def percentage( orig, p ) :
     return orig * p // 100
-def makeHeadder( optionList ) :
+def makeHeadder( text ) :
     xy = [ 30, percentage( glb.wh[1], 80 ) ] 
     header = pyTxt.Label(
-            optionList[0],'Times New Roman',
+            text,'Times New Roman',
             font_size=50,
             x=xy[0]-10, y = xy[1] 
         )
     return header
    
 class Menu( Grid ) :
-    def __init__( self, optionList ) :
+    def __init__( self, menuList ) :
+        optionList = menuList[0]
+        self.gameStatus = menuList[1]
         self.bg = mdl.gif([0, 0] , 'video/intro/bg', [1366,768])        
         self.menuQuad = Quad( [0,0], [400,768], [0,0,0,180] )
-        self.header =  makeHeadder( optionList ) 
+        self.header =  makeHeadder( optionList[0] ) 
         self.options = [ self.header ]
         self.menuQuad1 = Quad( [0,self.header.y-15], [400,50+20], [0, 159, 217,150] )
         xy = [self.header.x + 10,self.header.y - ( len( optionList ) * 70 )-15 ]
@@ -65,17 +67,14 @@ class Menu( Grid ) :
 
     def mousePress( self, xy ) :
         pass
-        # if self.inside( xy ) :
-        #     self.optionInd = self.XYToIndex( xy )[0]
-        # else :
-        #     self.optionInd = 0
 
     def mouseRelease( self, xy ) :
         if self.inside( xy ) :
             mdi.aud('audio/menu/1').play()
-            return self.XYToIndex( xy )[0] + 1
+            return self.gameStatus[ self.XYToIndex( xy )[0] ]
         return 0
 
+            
     def draw( self ) :
         self.bg.draw()
         self.menuQuad.draw()
@@ -84,3 +83,4 @@ class Menu( Grid ) :
             self.optionQuad[ self.optionInd ].draw()
         self.optionBatch.draw()
         super().draw()
+
