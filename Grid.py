@@ -2,6 +2,8 @@ import model as mdl
 from math import floor
 from pyglet.gl import GL_LINES
 
+def inRange( point, lr ) :
+    return lr[0] <= point and point <= lr[1]
        
 class Grid :
     def __init__( self, xy, wh, rc, visible = False ) :
@@ -57,6 +59,13 @@ class Grid :
         if self._vis :
             self._grid.draw( GL_LINES )
 
+    def inside( self, obj ) : 
+        if isinstance( obj, list ) :
+            xy = obj
+            lrX = [ self.xy[0], self.xy[0] + self.wh[0] ]
+            lrY = [ self.xy[1], self.xy[1] + self.wh[1] ]
+            return inRange( xy[0], lrX ) and inRange( xy[1], lrY )
+    
     def g_xy( self ):
         return list( self._xy )
     def s_xy( self, xy ) :

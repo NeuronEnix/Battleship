@@ -9,18 +9,30 @@ MileStone:
     | - adding missfire
     | - mass explosion
     | - adding sound
+    | - intro
+    | - Menu (main_menu)
+    x - batches
     x - Scaling all models based on xy and wh
-    x - adding video
 
 Working on:
-    - Scaling Objects
+    - link menu options to game
+    - making multi Player 
     - creating Player 
+    - Scaling Objects
 
 Commit:
-    - added bg audio,
-    - added explosion and missfire audio
-    - created media.py ( only audio is present )
-    - modification in ship.py
+- added bg audio,
+- added explosion and missfire audio
+- created media.py ( only audio is present )
+- modification in ship.py
+
+    - Menu creation
+
+
+Note :
+    Menu.py is a mess needs refactoring
+    bug in mouse movement, during intro option sound plays on mouse movement
+    
 Reference:
 
 def dispText(px, py, text):

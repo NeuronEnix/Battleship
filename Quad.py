@@ -3,13 +3,15 @@ from pyglet.gl import GL_QUADS, GL_BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 from pyglet.gl import  glEnable, glBlendFunc
 
 class Quad:
-    def __init__(self, x, y, size, color = [255,255,255,150]):
+    def __init__(self, xy, wh, color = [42, 120, 245,60]):
+        x,y = xy[0], xy[1]
+        w, h = wh[0], wh[1]
         vertex = (
             "v2i", (
                 x,y,
-                x+size,y,
-                x+size,y+size,
-                x,y+size
+                x+w,y,
+                x+w,y+h,
+                x,y+h
             )
         )
         color = (
