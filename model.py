@@ -40,9 +40,5 @@ def grid( xy, wh, rc ):
         y = round( xy[1] + wh[1] / rc[0] * i )
         verts.extend( [ xy[0], y,   xy[0] + wh[0], y ] )
     
-    # for i in range( xy[0], xy[0] + wh[0] + 1, round(wh[0] / rc[1] )):
-    #     verts.extend( [i, xy[1], i , xy[1] + wh[1]] )
-    # for i in range( xy[1], xy[1] + wh[1] + 1, round(wh[1] / rc[0]) ):
-    #     verts.extend( [xy[0], i, xy[0] + wh[0] , i] )
     grid = pyGra.vertex_list( len( verts ) // 2, ( 'v2i', verts ) )
     return grid
