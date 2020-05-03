@@ -10,13 +10,9 @@ import time
 
 class Battleship(py.window.Window):
     def __init__(self, *args, **kwargs):
-
-        # Intro Setup
         self.introVid = mdi.vid('video/intro/vlVid')
-        self.introAud = mdi.aud('video/intro/vlAud')
         self.introVid.volume = 0.0
-
-        # Window Configuration
+        self.introAud = mdi.aud('video/intro/vlAud')
         super().__init__(*args,**kwargs)
         self.set_minimum_size(1280,720)
         self.frame_rate = 1/60.0
@@ -26,60 +22,67 @@ class Battleship(py.window.Window):
         py.gl.glClearColor(0.0,0.0,0.0,1.0)
         glb.wh = [ self.width, self.height ]
 
-        # Menu Setup
-        self.mainMenu = Menu( glb.mainMenu )
-        
-        
-        # Playing Intro
-        self.introVid.play()
-        self.introAud.play()
-
+        # Resource Loader
+        self.loadResource()
+        if glb.gameStatus == glb.INTRO :    
+            self.introVid.play()
+        if glb.gameStatus <= glb.MAIN_MENU :    
+            self.introAud.play()
 
     def on_draw(self):
         self.clear()
 
         # Intro
-        if glb.gameStatus == glb.INTRO :
-            if self.introVid.time < 56 :
-                self.introVid.get_texture().blit(0,0,width = glb.wh[0],height = glb.wh[1])
-            else :
-                glb.gameStatus = glb.MAIN_MENU
-                self.introVid.pause()
-                self.introVid.delete()
+        if glb.gameStatus == glb.INTRO:
+            self.drawGameIntro()
 
         # Main Menu
         elif glb.gameStatus == glb.MAIN_MENU :
-                self.mainMenu.draw()
-                
+                self.menu[ glb.gameStatus ].draw()
+        
+        elif glb.gameStatus == glb.MULTI_PLAYER :
+            self.player1.draw()
                 
         self.fps_display.draw()
 
-    def update(self, dt):
-        pass
+    def update( self, dt ):
+        pass            
+            
 
 # Mouse
     def on_mouse_motion(self,x, y, dx, dy):
         
         if glb.gameStatus == glb.MAIN_MENU :
-            self.mainMenu.mouseMotion( [x,y] )
+            self.menu[ glb.gameStatus ].mouseMotion( [x,y] )
 
+        elif glb.gameStatus == glb.MULTI_PLAYER :
+            self.player1.mouseMotion( [x,y] )
+        
+    def on_mouse_press(self, x, y, button, modifiers):
+        if glb.gameStatus == glb.MAIN_MENU :
+            self.menu[ glb.gameStatus ].mousePress( [x,y] )
+            
+        elif glb.gameStatus == glb.MULTI_PLAYER :
+            self.player1.mousePress( [x,y] )
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
         if glb.gameStatus == glb.MAIN_MENU :
-            self.mainMenu.mouseDrag( [x,y] )
-            
-    def on_mouse_press(self, x, y, button, modifiers):
-        if glb.gameStatus == glb.MAIN_MENU :
-            self.mainMenu.mousePress( [x,y] )
+            self.menu[ glb.gameStatus ].mouseDrag( [x,y] )
+
+        elif glb.gameStatus == glb.MULTI_PLAYER :
+            self.player1.mouseDrag( [x,y] )
 
     def on_mouse_release(self, x, y, button, modifiers):
         if glb.gameStatus == glb.MAIN_MENU :
-            glb.gameStatus = self.mainMenu.mouseRelease( [x,y] )
+            glb.gameStatus = self.menu[ glb.gameStatus ].mouseRelease( [x,y] )
             if glb.gameStatus == glb.EXIT :
                 sys.exit()
-            glb.gameStatus = 0
-
- #keys
+            if glb.gameStatus != glb.MULTI_PLAYER : glb.gameStatus = 0
+            else: self.player1.bgAudio.play()
+                
+        elif glb.gameStatus == glb.MULTI_PLAYER :
+            self.player1.mouseRelease( [x,y] )
+#  Key
     def on_key_press(self, symbol, modifiers):
         if(symbol == key.W):
             pass
@@ -102,11 +105,21 @@ class Battleship(py.window.Window):
     def on_key_release(self, symbol, modifiers):
         pass            
 
-#Helpers
-    
+# Helpers
+    def drawGameIntro( self ) :
+        try : self.introVid.get_texture().blit(0,0,width = glb.wh[0],height = glb.wh[1])
+        except : glb.gameStatus = glb.MAIN_MENU ; self.introVid.delete()
        
-    def on_resize(self, width, height):
+# Resource loader
+    def loadResource( self ) :
+
+        # Menu
+        self.menu = []
+        for menuList in glb.menuData :
+            self.menu.append( Menu( menuList ) )
+        self.player1 = Player( glb.baseData )
         
+    def on_resize(self, width, height):
         width = max(1, width)
         height = max(1, height)
         py.gl.glViewport(0, 0, width, height)

@@ -15,24 +15,20 @@ MileStone:
     x - Scaling all models based on xy and wh
 
 Working on:
+    - refactoring ship, base and GameModel
+    - merging model to media 
+    - merging Grid to GameModel
     - link menu options to game
     - making multi Player 
     - creating Player 
     - Scaling Objects
 
 Commit:
-- added bg audio,
-- added explosion and missfire audio
-- created media.py ( only audio is present )
-- modification in ship.py
-
-    - Menu creation
-
+    - 
 
 Note :
-    Menu.py is a mess needs refactoring
-    bug in mouse movement, during intro option sound plays on mouse movement
-    
+    - Menu.py is a mess needs refactoring
+
 Reference:
 
 def dispText(px, py, text):
@@ -52,19 +48,3 @@ Mouse Pointer :
         cursor = pyglet.window.ImageMouseCursor(image, 16, 8)
         window.set_mouse_cursor(cursor)
 
-
-    #############################
-    #self._ID, self._maxID = 0,5
-    #############################
-    def _roll( self ):
-        self._ID %=self._maxID
-        path =          + str(self._ID)
-
-        self.model = 
-
-    def _next( self ):
-        self._ID += 1
-        self._roll( )
-    def _prev( self ):
-        self._ID -= 1
-        self._roll( )

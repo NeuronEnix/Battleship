@@ -3,6 +3,7 @@ import media as mdi
 from pyglet.gl import GL_LINES
 from GameModel import GameModel
 from Ship import Ship
+import Global as glb
 from Global import shipLength as Length, basePath as path, explosionAudioPath
 from Crosshair import Crosshair
 shipCount = len(Length)
@@ -11,7 +12,7 @@ def firstMissFireRotation( mfm ) :
 class Base( GameModel ):
     def __init__( self, xy, wh, rc = [10,10] ) :
         
-        gif = mdl.gif( xy, path + '0', wh )
+        gif = mdl.gif( [0,0], path + '0', glb.wh )
         super().__init__( xy, wh, rc, gif )
         
         self.grid = mdl.grid( xy, wh, rc )
@@ -30,7 +31,7 @@ class Base( GameModel ):
         else:
             self.crosshair.inVis()
 
-    def mouseDrag( self, xy, button ) :
+    def mouseDrag( self, xy ) :
         if self.inside( xy ) :
             self.crosshair.inVis( )
             if self.activeShip :
