@@ -1,6 +1,6 @@
 import model as mdl
 import media as mdi
-from tGameModel import GameModel
+from GameModel import GameModel
 import Global as glb
 
 expPath = 'img/explosion/0'

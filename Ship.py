@@ -1,7 +1,7 @@
 import model as mdl
-from tGameModel import GameModel
 import Global as glb
-from tExplosion import Explosion
+from GameModel import GameModel
+from Explosion import Explosion
 
 shipLength = [ 2, 3, 4, 5 ]
 shipCount = len( shipLength )

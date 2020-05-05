@@ -1,8 +1,8 @@
 import model as mdl
 import media as mdi
-from tGameModel import GameModel
-from tShip import Ship, shipCount, shipLength
 import Global as glb
+from GameModel import GameModel
+from Ship import Ship, shipCount, shipLength
 
 oceanPath = 'img/base/0'
 crosshairPath = 'img/crosshair/0'
