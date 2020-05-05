@@ -71,9 +71,12 @@ def grid( xy, wh, rc, batch = None, group = None ):
 def quad( xy, wh, color = [0, 255, 242, 50 ], batch = None, group = None, blend = True  ):
     x,y = xy[0], xy[1]
     w, h = wh[0], wh[1]
-    vertex = ( "v2i", (    x,  y,  x+w,    y,  x+w,y+h,    x,y+h   )    )
+    verts = ( "v2i", (    x,  y,  x+w,    y,  x+w,y+h,    x,y+h   )    )
     color = (   'c4B', ( color*4 ) )
+
+    if batch == None : return pyGra.vertex_list( 4 , verts, color )
     if blend    :   group = CustomGroup( pyGra.OrderedGroup( group ) )
     else        :   group = genGroup( group )
-    return batch.add( 4, GL_QUADS, group , vertex, color )
+    
+    return batch.add( 4, GL_QUADS, group , verts, color )
     
