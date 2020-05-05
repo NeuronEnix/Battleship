@@ -1,50 +1,104 @@
-from Grid import Grid
+import model as mdl
+from math import floor
 
 def inRange( point, lr ) :
     return lr[0] <= point and point <= lr[1]
 
-class GameModel( Grid ):
-    def __init__( self, xy, wh, rc = [1,1], model = None, visible = True ) :
-        super().__init__( xy, wh, rc )
-        self.model = model
-        self.visible = visible
+class GameModel :
+    def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False ) :
+        self._xy, self._wh, self._rc  = list( xy ), list( wh ), list( rc )
+        self.batch, self.group = batch, group
+        self._grid = None 
+        self.grid = grid
 
-    def vis( self ) :
-        self.visible = True
-    def inVis( self ) :
-        self.visible = False
+    def indexToXY( self, ind ) :
+        ind = list( ind )
+        if ind[0] >= self.rc[0] : ind[0] = self.rc[0] - 1
+        if ind[1] >= self.rc[1] : ind[1] = self.rc[1] - 1
 
+        if ind[0] < 0 : ind[0] = 0
+        if ind[1] < 0 : ind[1] = 0
+        xy = [
+            self.xy[0] + ind[1] * self.subWH[0],
+            self.xy[1] + ( self.rc[0]- 1 - ind[0] ) * self.subWH[1] 
+        ]
+        return xy        
+        
+    def XYToIndex( self, xy, roundUP = False) : 
+        xy = list( xy )
+        xy[0] = ( xy[0] - self.xy[0] ) / self.subWH[0]
+        xy[1] = ( xy[1] - self.xy[1] ) / self.subWH[1]
+
+        if roundUP  : xy[0] = round( xy[0] )    ;   xy[1] = round( xy[1] )
+        else        : xy[0] = floor( xy[0] )    ;   xy[1] = floor( xy[1] )
+            
+        ind = [   self.rc[0] - 1 - xy[1],    xy[0]    ]
+        
+        if ind[0] >= self.rc[0] : ind[0] = self.rc[0] - 1
+        if ind[1] >= self.rc[1] : ind[1] = self.rc[1] - 1
+
+        if ind[0] < 0 : ind[0] = 0
+        if ind[1] < 0 : ind[1] = 0
+        
+        return ind
+
+    def XYToXY( self, xy, roundUP = False ) :
+        ind = self.XYToIndex( xy, roundUP )       
+        xy = self.indexToXY( ind )
+        return xy
+    
     def inside( self, obj ) : 
-        m0 = self.model
+        xy, wh = self.xy, self.wh
         if isinstance( obj, list ) :
-            xy = obj
-            return inRange( xy[0], [m0.x, m0.x+m0.width] ) and inRange( xy[1], [m0.y, m0.y+m0.height] )
-
-        m1 = obj.model 
-        xInside = inRange( m0.x, [m1.x, m1.x+ m1.width] ) and inRange ( m0.x + m0.width, [m1.x, m1.x+ m1.width] )
-        yInside = inRange( m0.y, [m1.y, m1.y+ m1.height] ) and inRange ( m0.y + m0.height, [m1.y, m1.y+ m1.height] )    
+            objXY = obj
+            return inRange( objXY[0], [xy[0], xy[0]+wh[0]] ) and inRange( objXY[1], [xy[1], xy[1]+wh[1]] )
+        objXY, objWH = obj.xy, obj.wh
+        xInside = inRange( xy[0], [objXY[0], objXY[0]+ objWH[0]] ) and inRange ( xy[0] + wh[0], [objXY[0], objXY[0]+ objWH[0]] )
+        yInside = inRange( xy[1], [objXY[1], objXY[1]+ objWH[1]] ) and inRange ( xy[1] + wh[1], [objXY[1], objXY[1]+ objWH[1]] )    
         return xInside and yInside
     
     def on( self, obj ):
-        m0 = self.model
-        m1 = obj.model 
-        xInside = inRange( m0.x, [m1.x, m1.x+ m1.width ]) or inRange ( m0.x + m0.width, [m1.x, m1.x+ m1.width] )
-        yInside = inRange( m0.y, [m1.y, m1.y+ m1.height] ) or inRange ( m0.y + m0.height, [m1.y, m1.y+ m1.height] )
+        xy, wh = self.xy, self.wh
+        objXY, objWH = obj.xy, obj.wh
+        xInside = inRange( xy[0], [objXY[0], objXY[0]+ objWH[0] ]) or inRange ( xy[0] + wh[0], [objXY[0], objXY[0]+ objWH[0]] )
+        yInside = inRange( xy[1], [objXY[1], objXY[1]+ objWH[1]] ) or inRange ( xy[1] + wh[1], [objXY[1], objXY[1]+ objWH[1]] )
         return xInside and yInside
 
-    def draw( self ):
-        super().draw()
-        if self.visible:
-            self.model.draw()   
 
-
+    def g_xy( self ):
+        return list( self._xy )
     def s_xy( self, xy ) :
-        super().s_xy( xy )
-        self.model.x, self.model.y = xy[0], xy[1]
-    xy = property(Grid.g_xy, s_xy)
+        self._xy[0], self._xy[1] = xy[0], xy[1]
+        self.grid = self._grid
+    xy = property( g_xy, s_xy )
     
+    def g_wh( self ):
+        return list( self._wh )
     def s_wh( self, wh ) :
-        super().s_wh( wh )
-        self.model.width, self.model.height = wh[0], wh[1]
-    wh = property( Grid.g_wh, s_wh)
+        self._wh[0], self._wh[1] = wh[0], wh[1]
+        self.grid = self._grid
+    wh = property( g_wh, s_wh)
+
+    def g_rc( self ):
+        return list( self._rc )
+    def s_rc( self, rc ) :
+        self._rc[0], self._rc[1] = rc[0], rc[1]
+        self.grid = self._grid
+    rc = property( g_rc, s_rc)
+        
+    def g_subWH( self ) :
+        wh, rc = self.wh, self.rc
+        return [ wh[0] // rc[1], wh[1] // rc[0]  ]
+    subWH = property( g_subWH, None )
+    
+    def s_grid( self, grid ) :
+        if self._grid :
+            self._grid.delete()
+            self._grid = None
+        if grid :
+            self._grid = mdl.grid(
+            self._xy, self._wh, self._rc, 
+            self.batch, self.group
+        )
+    grid = property( None, s_grid )
         
