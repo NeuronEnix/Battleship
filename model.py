@@ -1,14 +1,14 @@
 import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
 import pyglet.graphics as pyGra
+import pyglet.text as pyTxt
 from pyglet.gl import GL_LINES, GL_QUADS, GL_BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 from pyglet.gl import  glEnable, glBlendFunc, glDisable
-def genGroup( group ) :
-    if group != None : group = pyGra.OrderedGroup( group )
-    return group
+def genGroup( group = 0 ) :
+    return pyGra.OrderedGroup( group )
 
 class OneTimeSprite( pySpt.Sprite ) :
-    def __init__( self, xy, obj,batch = None, group = None ) :
+    def __init__( self, xy, obj,batch = None, group = 0 ) :
         super().__init__( obj, x=xy[0], y=xy[1], batch = batch, group = group)
 
     def on_animation_end( self ) :
@@ -34,21 +34,22 @@ def objAnchorXY( obj ) :
     return obj
 
 
-def gif( xy, path, wh = [None, None], batch = None, group = None, oneTime = False):
+def gif( xy, path, wh = [None, None], batch = None, group = 0, oneTime = False):
     obj = pyRes.animation( path + '.gif' )
     if oneTime : model = OneTimeSprite( xy, obj, batch = batch, group = genGroup( group ) )
     else       : model = pySpt.Sprite( obj, x=xy[0], y=xy[1], batch = batch, group = genGroup( group ) )
     model = scale( model, wh )
     return model
 
-def img( xy, path, wh = [None, None], batch = None,group = None, anchorXY = False ):
+def img( xy, path, wh = [None, None], batch = None,group = 0, anchorXY = False ):
     obj = pyRes.image( path + '.png')
     if anchorXY: obj = objAnchorXY( obj )
     model = pySpt.Sprite( obj, x=xy[0], y=xy[1], batch = batch, group = genGroup( group ) )
     model = scale( model, wh)
     return model
 
-def grid( xy, wh, rc, batch = None, group = None ):
+def grid( xy, wh, rc, batch = None, group = 0 ):
+    
     verts = [
         xy[0], xy[1],               xy[0]+wh[0], xy[1],
         xy[0]+wh[0] ,xy[1],         xy[0]+wh[0], xy[1]+wh[1],
@@ -68,7 +69,7 @@ def grid( xy, wh, rc, batch = None, group = None ):
         grid = pyGra.vertex_list( len( verts ) // 2, ( 'v2i', verts ) )
     return grid
 
-def quad( xy, wh, color = [0, 255, 242, 50 ], batch = None, group = None, blend = True  ):
+def quad( xy, wh, color = [0, 255, 242, 50 ], batch = None, group = 0, blend = False  ):
     x,y = xy[0], xy[1]
     w, h = wh[0], wh[1]
     verts = ( "v2i", (    x,  y,  x+w,    y,  x+w,y+h,    x,y+h   )    )
@@ -79,4 +80,20 @@ def quad( xy, wh, color = [0, 255, 242, 50 ], batch = None, group = None, blend 
     else        :   group = genGroup( group )
     
     return batch.add( 4, GL_QUADS, group , verts, color )
-    
+
+def label( xy, wh, text, size = 10, color = None, batch = None, group = 0, resize = True ) :
+    label = pyTxt.Label( 
+        text,
+        'Times New Roman',
+        size,
+        x = xy[0], y = xy[1],
+        batch = batch, group = genGroup(group)
+    )
+    if resize :
+        while wh[0] > label.content_width and wh[1] > label.content_height :
+            label.font_size +=1
+        while wh[0] < label.content_width or wh[1] < label.content_height :
+            label.font_size -=1
+    if color : 
+        label.color = color
+    return label
