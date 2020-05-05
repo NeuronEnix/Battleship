@@ -4,7 +4,6 @@ import media as mdi
 import pyglet as py
 import Global as glb
 from pyglet.window import mouse, key
-from Player import Player
 from Menu import Menu
 import time
 
@@ -40,9 +39,6 @@ class Battleship(py.window.Window):
         elif glb.gameStatus == glb.MAIN_MENU :
                 self.menu[ glb.gameStatus ].draw()
         
-        elif glb.gameStatus == glb.MULTI_PLAYER :
-            self.player1.draw()
-                
         self.fps_display.draw()
 
     def update( self, dt ):
@@ -54,48 +50,41 @@ class Battleship(py.window.Window):
         
         if glb.gameStatus == glb.MAIN_MENU :
             self.menu[ glb.gameStatus ].mouseMotion( [x,y] )
-
-        elif glb.gameStatus == glb.MULTI_PLAYER :
-            self.player1.mouseMotion( [x,y] )
         
     def on_mouse_press(self, x, y, button, modifiers):
         if glb.gameStatus == glb.MAIN_MENU :
             self.menu[ glb.gameStatus ].mousePress( [x,y] )
             
-        elif glb.gameStatus == glb.MULTI_PLAYER :
-            self.player1.mousePress( [x,y] )
+        if button == mouse.LEFT :
+            pass
+        if button == mouse.RIGHT :
+            pass
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
         if glb.gameStatus == glb.MAIN_MENU :
             self.menu[ glb.gameStatus ].mouseDrag( [x,y] )
 
-        elif glb.gameStatus == glb.MULTI_PLAYER :
-            self.player1.mouseDrag( [x,y] )
 
     def on_mouse_release(self, x, y, button, modifiers):
         if glb.gameStatus == glb.MAIN_MENU :
             glb.gameStatus = self.menu[ glb.gameStatus ].mouseRelease( [x,y] )
             if glb.gameStatus == glb.EXIT :
                 sys.exit()
-            if glb.gameStatus != glb.MULTI_PLAYER : glb.gameStatus = 0
-            else: self.player1.bgAudio.play()
                 
-        elif glb.gameStatus == glb.MULTI_PLAYER :
-            self.player1.mouseRelease( [x,y] )
 #  Key
     def on_key_press(self, symbol, modifiers):
-        if(symbol == key.W):
-            pass
-
-        if(symbol == key.S):
-            pass
-        
         if(symbol == key.Q):
             pass
         
         if(symbol == key.A):
             pass
-        
+
+        if(symbol == key.W):
+            pass
+
+        if(symbol == key.S):
+            pass
+                
         if(symbol == key.E):
             pass
 
@@ -117,7 +106,6 @@ class Battleship(py.window.Window):
         self.menu = []
         for menuList in glb.menuData :
             self.menu.append( Menu( menuList ) )
-        self.player1 = Player( glb.baseData )
         
     def on_resize(self, width, height):
         width = max(1, width)

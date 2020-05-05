@@ -1,9 +1,9 @@
-from Quad import Quad
-import Global as glb
-from Grid import Grid
+import pyglet.text as pyTxt
+from pyglet.gl import GL_QUADS
 import model as mdl
 import media as mdi
-import pyglet.text as pyTxt
+import Global as glb
+from GameModel import GameModel
 
 def percentage( orig, p ) :
     return orig * p // 100
@@ -16,19 +16,19 @@ def makeHeadder( text ) :
         )
     return header
    
-class Menu( Grid ) :
+class Menu( GameModel ) :
     def __init__( self, menuList ) :
         optionList = menuList[0]
         self.gameStatus = menuList[1]
         self.bg = mdl.gif([0, 0] , 'video/intro/bg', [1366,768])        
-        self.menuQuad = Quad( [0,0], [400,768], [0,0,0,180] )
+        self.menuQuad = mdl.quad( [0,0], [400,768], [0,0,0,180] )
         self.header =  makeHeadder( optionList[0] ) 
         self.options = [ self.header ]
-        self.menuQuad1 = Quad( [0,self.header.y-15], [400,50+20], [0, 159, 217,150] )
+        self.menuQuad1 = mdl.quad( [0,self.header.y-15], [400,50+20], [0, 159, 217,150] )
         xy = [self.header.x + 10,self.header.y - ( len( optionList ) * 70 )-15 ]
         wh = [ 400-30 , len( optionList ) * 70 ]
         rc = [ len( optionList ) - 1, 1 ] 
-        super().__init__( xy, wh, rc,visible=False )
+        super().__init__( xy, wh, rc)
         for i in range(1, len( optionList ) ) :
             xy = self.indexToXY( [i-1,0] )
             self.options.append(
@@ -44,7 +44,7 @@ class Menu( Grid ) :
         self.optionQuad = []
         self.optionInd = -1
         for i in range( self.rc[0] ) :
-            self.optionQuad.append( Quad( self.indexToXY( [i,0] ), self.subWH, [0, 255, 242, 50 ]) )
+            self.optionQuad.append( mdl.quad( self.indexToXY( [i,0] ), self.subWH, [0, 255, 242, 50 ] ) )
 
 # MouseEvents
     def mouseMotion( self, xy ) :
@@ -77,10 +77,9 @@ class Menu( Grid ) :
             
     def draw( self ) :
         self.bg.draw()
-        self.menuQuad.draw()
-        self.menuQuad1.draw()
+        self.menuQuad.draw(GL_QUADS)
+        self.menuQuad1.draw(GL_QUADS)
         if self.optionInd != -1:
-            self.optionQuad[ self.optionInd ].draw()
+            self.optionQuad[ self.optionInd ].draw(GL_QUADS)
         self.optionBatch.draw()
-        super().draw()
 

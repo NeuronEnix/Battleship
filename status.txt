@@ -24,10 +24,49 @@ Working on:
     - Scaling Objects
 
 Commit:
-    - 
+    - changed code structure
+        - GameModel <- Explosion
+        - GameModel <- Ship
+        - GameModel <- Player
+
+    - Added GameMaster
+        - Controls gameplay ( not done )
+
+    - Added quad to model.py
+    - Quads can be added to batch retaining blending
+
+
 
 Note :
     - Menu.py is a mess needs refactoring
+
+
+Ship( GameModel ) :
+    - mousePress( xy ) : left
+    - mouseDrag( xy ) : left
+    - mouseRelease( xy, button )
+    - hit( xy ) : left
+    - archive( )
+    - extract( )
+
+Player( GameModel ) :
+    - mouseMotion( xy )
+    - mousePress( xy ) : left
+    - mouseDrag( xy ) : left
+    - mouseRelease( xy, button )
+    - hit( xy ) : left
+    - archive( )
+    - extract( )
+
+GameMaster :
+    - playerSetup( playerName )
+    -
+    - mouseMotion( xy )
+    - mousePress( xy ) : left
+    - mouseDrag( xy ) : left
+    - mouseRelease( xy, button )
+    - archive( )
+    - extract( )
 
 Reference:
 
@@ -48,3 +87,17 @@ Mouse Pointer :
         cursor = pyglet.window.ImageMouseCursor(image, 16, 8)
         window.set_mouse_cursor(cursor)
 
+
+
+Ready!
+self.qxy = [1188, 2]
+self.qwh = [172, 80]
+self.txy = [31, 21]
+self.dd()
+def dd( self ) :
+    self.lb = py.text.Label('Ready!',
+                  font_name='Times New Roman',
+                  font_size=30,
+                  x=self.qxy[0]+self.txy[0],
+                  y=self.qxy[1] +self.txy[1])
+    self.qd = Quad( self.qxy, self.qwh )
