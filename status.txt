@@ -15,66 +15,57 @@ MileStone:
     x - Scaling all models based on xy and wh
 
 Working on:
-    - refactoring ship, base and GameModel
-    - merging model to media 
-    - merging Grid to GameModel
-    - link menu options to game
-    - making multi Player 
-    - creating Player 
-    - Scaling Objects
+    - adding lan
+
 
 Commit:
     - changed code structure
         - GameModel <- Explosion
         - GameModel <- Ship
         - GameModel <- Player
-
+    - SidePanel.py
     - Added GameMaster
         - Controls gameplay ( not done )
-
+        - Need seriouse refactor
     - Added quad to model.py
     - Quads can be added to batch retaining blending
 
+    - audio has to be corrected
+    - In Menu.py  PauseMenu needs rework at key press
 
 
 Note :
-    - Menu.py is a mess needs refactoring
+    - GameMaster.py is a mess needs refactoring
+        -specially def setBattleField
 
 
-Ship( GameModel ) :
-    - mousePress( xy ) : left
-    - mouseDrag( xy ) : left
-    - mouseRelease( xy, button )
-    - hit( xy ) : left
-    - archive( )
-    - extract( )
+Multiplayer
+    init()
+        self.gm = GM()
+        self.gm.setP1()
 
-Player( GameModel ) :
-    - mouseMotion( xy )
-    - mousePress( xy ) : left
-    - mouseDrag( xy ) : left
-    - mouseRelease( xy, button )
-    - hit( xy ) : left
-    - archive( )
-    - extract( )
+    press():
+        status = gm.press()
+        if ststus == playing :
+            
+        self.status == playerSetup :
+           doSetupStuffs()
 
-GameMaster :
-    - playerSetup( playerName )
-    -
-    - mouseMotion( xy )
-    - mousePress( xy ) : left
-    - mouseDrag( xy ) : left
-    - mouseRelease( xy, button )
-    - archive( )
-    - extract( )
 
-Reference:
 
-def dispText(px, py, text):
-    pyglet.text.Label(text,
-                          font_name='Times New Roman',
-                          font_size=10,
-                          x=10, y=750).draw()
+    setupStuffs:
+     if status == gs.playerSetupConfirm
+                self.gm.setP2()
+            else:
+                self.p1 = self.gm.player[0].archive
+                self.p2 = self.gm.player[1].archive
+                self.gm.setBattlefield(self.p1,self.p2)
+
+
+
+
+
+
 
 
 
@@ -87,7 +78,14 @@ Mouse Pointer :
         cursor = pyglet.window.ImageMouseCursor(image, 16, 8)
         window.set_mouse_cursor(cursor)
 
-
+def makeBatch( groupList ) :
+    batch = pyGra.Batch()
+    for i in range( len( groupList ) ):
+        groupID = pyGra.OrderedGroup( i )
+        for model in groupList[ i ] :
+            model.group = groupID
+            model.batch = batch
+    return batch
 
 Ready!
 self.qxy = [1188, 2]

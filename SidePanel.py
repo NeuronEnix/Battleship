@@ -1,8 +1,10 @@
 import model as mdl
 import media as mdi
 import Global as glb
-from GameModel import GameModel
-
+import GameModel
+GameModel = GameModel.GameModel
+def reduceTo( val, percentage ) :
+    return val * percentage // 100
 color = [
                 [0,0,0,180],        # SidePanel Color
                 [0, 159, 217,150],  # HeaderQuad Color
@@ -14,27 +16,27 @@ HEADER_QUAD_COLOR_IND = cc ; cc += 1
 SELECT_QUAD_COLOR_IND = cc ; cc += 1
 
 cc =  0
-BG_GROUP_IND = cc ; cc += 1
-SIDE_PANEL_GROUP_IND = cc ; cc += 1
-QUAD_GROUP_IND = cc ; cc += 1
-TEXT_GROUP_IND = cc ; cc += 1
-
-def reduceTo( val, percentage ) :
-    return val * percentage // 100
+gBG = cc ; cc += 1
+gSidePanel = cc ; cc += 1
+gQuad = cc ; cc += 1
+gText = cc ; cc += 1
 
 class SidePanel( GameModel ) :
-    def __init__( self, headerText, optionList, whPercent = [30,100], batch = None, group = [0,1,2,3], bgPath = None, fullScreenBlend = False ) :
+    def __init__( self, headerText, optionList, whPercent = [30,100], batch = None, group = 0, bgPath = None, fullScreenBlend = False ) :
         self.batch =  batch
         self.sidePanelWH = [ reduceTo( glb.wh[0], whPercent[0] ), reduceTo( glb.wh[1], whPercent[1] ) ]
-        self.setBG( bgPath, group[ BG_GROUP_IND ] )
-        self.setSidePanel( color[ SIDE_PANEL_COLOR_IND ], fullScreenBlend, group[ SIDE_PANEL_GROUP_IND ] )
+        self.setBG( bgPath, group + gBG )
+        self.setSidePanel( color[ SIDE_PANEL_COLOR_IND ], fullScreenBlend, group + gSidePanel )
         
-        self.setHeader( headerText, group[ TEXT_GROUP_IND ], color[ HEADER_QUAD_COLOR_IND ], group[ QUAD_GROUP_IND ]  )
-        self.setOptions( optionList, group[ TEXT_GROUP_IND ] )
+        self.setHeader( headerText, group + gText, color[ HEADER_QUAD_COLOR_IND ], group + gQuad  )
+        self.setOptions( optionList, group + gText )
         self.prevInd = -1
         self.activeQuad = None
-        self.group  = [0,1,2,3]
+        self.group = group 
 
+    def draw( self ) :
+        self.batch.draw()
+        
     def optionHighlight( self, xy ) :
         if self.inside( xy ) :
             ind  = self.XYToIndex( xy )
@@ -44,7 +46,8 @@ class SidePanel( GameModel ) :
                     self.activeQuad = None
                 xy = self.indexToXY( ind )
                 if len(self.optionList[ ind[0] ] ) == 2 :
-                    self.activeQuad = mdl.quad( xy, self.subWH,  color = color[SELECT_QUAD_COLOR_IND], batch= self.batch, group = self.group[ QUAD_GROUP_IND ], blend = True )
+                    mdi.aud( glb.Path.mouseOverAud ).play()
+                    self.activeQuad = mdl.quad( xy, self.subWH,  color = color[SELECT_QUAD_COLOR_IND], batch= self.batch, group = self.group + gQuad, blend = True )
                 self.prevInd = ind[0]
         elif self.activeQuad :
             self.activeQuad.delete() 
@@ -53,21 +56,22 @@ class SidePanel( GameModel ) :
 
     def mouseMotion( self, xy ) :
         self.optionHighlight( xy )
-    
-    def mouseDrag( self, xy ) :
-        self.optionHighlight( xy )
-                
-            
-    def mouseRelease( self, xy, button ) :
-        if button == 'l' and self.inside( xy ) :
+
+    def mousePress( self, xy, button ) :
+        if self.inside( xy ) :
             ind = self.XYToIndex( xy )[0]
-            if len( self.optionList[ ind ] ) == 2  :
+            if len( self.optionList[ ind ] ) == 2 :
                 return self.optionList[ ind ][1]
         return None
-    
-    
+
+    def mouseDrag( self, xy, button ) :
+        self.optionHighlight( xy )
+            
+    def mouseRelease( self, xy, button ) :
+        pass
     def setBG( self, bgPath, group ) :
-        if bgPath : mdl.gif( [0,0], bgPath ,glb.wh, self.batch, group )
+        if bgPath : 
+            mdl.gif( [0,0], bgPath ,glb.wh, self.batch, group )
             
 
     def setSidePanel( self, color, fullScreenBlend, group ) :
@@ -82,7 +86,7 @@ class SidePanel( GameModel ) :
 
         txy = [ xy[0] + reduceTo( wh[0], 4), xy[1] + reduceTo( wh[1], 25) ]
         twh = [ reduceTo( wh[0], 70 ), reduceTo( wh[0], 70 ) ]
-        self.headerLbl = mdl.label( txy, twh, text, batch = self.batch, group = textGroup )
+        self.headerLbl = mdl.label( txy, twh, text, size = 52, batch = self.batch, group = textGroup )
         
     def setOptions( self, optionList, group ) :
         self.optionList = optionList
@@ -93,7 +97,7 @@ class SidePanel( GameModel ) :
         super().__init__( xy, wh, [ len( optionList ), 1 ], self.batch, group )
         self.optionLabel = []
         xyPercInside = [2,20]
-        tSize = 10
+        tSize = 31
         tResize = True
         wh = [ reduceTo( self.subWH[0] , 70), reduceTo( self.subWH[1], 100 - xyPercInside[1] * 2 ) ]
         xyCorrector = [ reduceTo( self.subWH[0], xyPercInside[0] ), reduceTo( self.subWH[1], xyPercInside[1] ) ]

@@ -1,91 +1,93 @@
-import pyglet.canvas as pyCan
-import pyglet.graphics as pyGra
+# Window Width and Height
+import model as mdl
 import media as mdi
-basePath = 'img/base/'
-crosshairPath = 'img/crosshair/'
-explosionPath = 'img/explosion/'
-shipPath = 'img/ship/'
-smokePath = 'img/smoke/'
-
-explosionAudioPath = 'audio/explosion/'
-# Data
-
-baseData = [[300, 50], [600,600], [10,10]]
-shipLength = [ 2, 3, 4, 5 ]
+import Menu
 wh = []
+onScreen = None
 
-introVid = mdi.vid('video/intro/vlVid')
-introVid.volume = 0.0
-introAud = mdi.aud('video/intro/vlAud')
+class Path :
+    # Audio
+    explosionAud        = 'aud/explosion'
+    massExplosionAud    = 'aud/massExplosion'
+    gameplayAud         = 'aud/gameplay'
+    misfireAud          = 'aud/misfire'
+    mouseOverAud        = 'aud/mouseOver'
+    introAud            = 'aud/intro'
+
+    # Video
+    introVid            = 'vid/intro'
+
+    # Image
+    shipImg             = 'img/ship'
+    crosshairImg        = 'img/crosshair'
+    misfireImg          = 'img/misfire'
+
+    # Gif
+    bgGif               = 'gif/bg'
+    oceanGif            = 'gif/ocean'
+    explosionGif        = 'gif/explosion'
+    smokeGif            = 'gif/smoke'
+
+
+p = Path
+
+mdl.gif( [0,0],  p.bgGif)
+mdl.gif( [0,0],  p.oceanGif)
+mdl.gif( [0,0],  p.explosionGif)
+mdl.gif( [0,0],  p.smokeGif)
+
 
 # Group
-gg = 0
-gBG = gg ; gg += 1
-
-gOcean = gg ; gg += 1
-gPlayerGrid = gg ; gg += 1
-
-gShipGrid = gg ; gg += 1
-gShip = gg ; gg += 1
-
-gExpGrid = gg ; gg += 1
-gSmoke = gg ; gg += 1
-gExp = gg ; gg += 1
-
-gMisfire = gg ; gg += 1
-gCrosshair = gg ; gg += 1
-
-gMisfire
+cc = 0
+class Group :
+    MAIN_MENU = cc ; cc += 1
+    SHIP = cc ; cc += 1
 
 
-# Game Status
-cc = -1
-INTRO           = cc ; cc += 1
-
-MAIN_MENU       = cc ; cc += 1
-PAUSE           = cc ; cc += 1
-PLACE_SHIP1     = cc ; cc += 1
-PLACE_SHIP2     = cc ; cc += 1
-
-
-SINGLE_PLAYER   = cc ; cc += 1
-MULTI_PLAYER    = cc ; cc += 1
-LAN             = cc ; cc += 1
-
-RESUME          = cc ; cc += 1
-RESTART         = cc ; cc += 1
-PLAYING         = cc ; cc += 1
-
-EXIT            = cc ; cc += 1
-
-gameStatus      = INTRO
+# GameStatus
+cc = 0
+class GameStatus :
+    INTRO = cc ; cc += 1
+    MAIN_MENU = cc ; cc += 1
+    SINGLE_PLAYER = cc ; cc += 1
+    MULTI_PLAYER = cc ; cc += 1
+    LAN = cc ; cc += 1
+    RESUME = cc ; cc += 1
+    EXIT = cc ; cc += 1
+    gameStatus = INTRO
 
 
-# Menu Data 
-mainMenu = [
-    [ 'Battleship', 'Single Player', 'Multi Player', 'LAN', 'Exit' ],
-    [                SINGLE_PLAYER ,  MULTI_PLAYER ,  LAN ,  EXIT  ]
-]
-pauseMenu = [
-    [ 'Paused', 'Resume', 'Restart', 'Main Menu' ],
-    [           PLAYING,  RESTART,   MAIN_MENU  ]
-]
-player1 = [
-    ['Player 1', 'Place your', 'Ships', '', '', '', '', 'Back'],
-    []
-]
-player2 = [
-    ['Player 2', 'Place your', 'Ships', '', '', '', '', 'Back'],
-    []
-]
-menuData = [ mainMenu, pauseMenu, player1, player2 ]
+def reduceTo( val, percentage ) :
+    return val * percentage // 100
 
-def makeBatch( groupList ) :
-    batch = pyGra.Batch()
-    for i in range( len( groupList ) ):
-        groupID = pyGra.OrderedGroup( i )
-        for model in groupList[ i ] :
-            model.group = groupID
-            model.batch = batch
-    return batch
+class Nothing :
+    @staticmethod
+    def draw() :                     pass
 
+    @staticmethod
+    def mouseMotion( xy ) :          pass
+
+    @staticmethod
+    def mousePress( xy, button ) :   pass
+
+    @staticmethod
+    def mouseDrag( xy, button ) :    pass
+
+    @staticmethod
+    def mouseRelease( xy, button ) : pass
+
+
+class IntroVid( Nothing ) : 
+    def __init__( self ) :
+        global onScreen
+        vidPath = Path.introVid
+        self.vid = mdi.vid( vidPath )
+        self.vid.volume = 0.0
+        Menu.MainMenu()
+        onScreen = self
+    def draw( self ) :
+        try : self.vid.texture.blit(0,0,width = glb.wh[0],height = glb.wh[1])
+        except : 
+            gs = GameStatus
+            gs.gameStatus = gs.MAIN_MENU ; self.vid.delete() 
+            Menu.MainMenu()

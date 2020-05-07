@@ -1,20 +1,24 @@
 import model as mdl
 import media as mdi
 import Global as glb
-from GameModel import GameModel
-from Ship import Ship, shipCount, shipLength
+import GameModel
+import Ship
+GameModel = GameModel.GameModel
 
-oceanPath = 'img/base/0'
-crosshairPath = 'img/crosshair/0'
-misfirePath = 'img/crosshair/2'
-misfireAudPath = 'audio/explosion/2'
-
+shipCount = Ship.shipCount
+shipLength = Ship.shipLength
+Ship = Ship.Ship
+cc = 0 
+gPlayerGrid = cc ; cc += 1
+gMisfire    = cc ; cc += 1
+gShip       = cc ; cc += 1    
+gCrosshair  = cc + 4
 class Player( GameModel ):
-    def __init__( self, xy, wh, rc = [10,10], batch = None) :
-        super().__init__( xy, wh, rc, batch, glb.gPlayerGrid, True )
-        self.batch = batch
-
-        self.crosshair = mdl.img( xy, crosshairPath , self.subWH, self.batch, glb.gCrosshair, anchorXY = True )
+    def __init__( self, xy, wh, rc = [10,10], batch = None, group = 0) :
+        self.batch, self.group = batch, group
+        super().__init__( xy, wh, rc, batch, self.group + gPlayerGrid, True )
+        self.health = 4
+        self.crosshair = mdl.img( xy, glb.Path.crosshairImg , self.subWH, self.batch, self.group + gCrosshair, anchorXY = True )
         self.prevCroshairInd = self.XYToIndex( xy )
         self.crosshair.visible = False
         self.crosshairXYCorrector = [ self.subWH[0] // 2, self.subWH[1] // 2 ]
@@ -24,6 +28,7 @@ class Player( GameModel ):
         self.hitInd = set()
         self.misfireList = []
 
+    # Return True if the player has to continue next move else false
     def hit( self, xy ) :
         if self.inside( xy ) :
             ind = self.XYToIndex( xy )
@@ -31,16 +36,17 @@ class Player( GameModel ):
                 if ship.hit( xy ) :
                     self.hitInd.add( str( ind ) )
                     if ship.health == 0 :
-                        # Do Something when ship destroyed
-                        pass
+                        self.health -=1
                     return True
             else:
                 if ( str(ind) in self.hitInd ) == False :
                     self.hitInd.add( str( ind ) )
                     xy = self.indexToXY( ind )
-                    self.misfireList.append( mdl.img( xy, misfirePath, self.subWH, self.batch, glb.gMisfire ) )
-                    mdi.aud( misfireAudPath ).play()
-        return False
+                    self.misfireList.append( mdl.img( xy, glb.Path.misfireImg, self.subWH, self.batch, self.group + gMisfire ) )
+                    mdi.aud( glb.Path.misfireAud ).play()
+                    self.crosshair.visible = False
+                    return False
+        return True
     
     def mouseMotion( self, xy ):
         if self.inside( xy ):
@@ -71,26 +77,6 @@ class Player( GameModel ):
             self.rePosition( self.activeShip )
             self.activeShip = None
 
-
-    # def missFire( self, xy ) :
-    #     xy = self.XYToXY( xy )
-    #     wh = self.subWH
-    #     i = 30
-    #     scale_x = wh[0] * i // 100
-    #     scale_y = wh[1] * i // 100
-    #     wh[0] -= scale_x                        
-    #     wh[1] -= scale_y                        
-    #     xy[0] += scale_x // 2                       
-    #     xy[1] += scale_y // 2  
-    #     if str(xy) in self.missFireModel == False:
-    #         print('there')
-    #     else:   
-    #         self.missFireModel[ str(xy) ] = Crosshair( xy , wh, 1 )
-    #         self.missFireModel[ str(xy) ] = mdl.img( xy , 'img/crosshair/3' , wh)
-    #         # self.missFireModel[ str(xy) ].model.rotation = firstMissFireRotation( self.missFireModel) 
-    #         # self.missFireModel[ str(xy) ].vis( xy )
-    #         # self.missFireAudio.play()
-        
     def rePosition( self, ship ):
         ship.xy = self.XYToXY( ship.xy, roundUP = True )
         if ship.inside( self ) == False :
@@ -111,7 +97,7 @@ class Player( GameModel ):
                     self.indexToXY( [ round(id * xFactor), 0 ] ),
                     [ shipLength[ id ] * self.subWH[0], self.subWH[1] ],
                     id, 1,
-                    self.batch
+                    self.batch, gShip
                 )
             )
         return ships
@@ -119,6 +105,26 @@ class Player( GameModel ):
     def update( self ) :
         if self.crosshair.visible :
             self.crosshair.rotation += 4
+    
+    def archive( self ) :
+        data = []
+        for ship in self.ships :
+            data.append( [ self.XYToIndex( ship.xy ), ship.orientation ] )
+        return data
+    def makeShipsVisible( self ) :
+        for ship in self.ships :
+            ship.model.visible = True
+    def extract( self, data ) :
+        for i in range( len( data ) ) :
+            ship = self.ships[ i ]
+            while ship.orientation != data[i][1] :
+                ship.rotate()
+            ship.xy = self.indexToXY( data[i][0] )
+            self.rePosition( ship )
+            ship.model.visible = False
+
+            
+        
     
     def s_crosshairXY( self, xy ) :
         ind = self.XYToIndex( xy )

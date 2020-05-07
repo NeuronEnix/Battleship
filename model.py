@@ -1,6 +1,7 @@
 import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
 import pyglet.graphics as pyGra
+import pyglet.image as pyImg
 import pyglet.text as pyTxt
 from pyglet.gl import GL_LINES, GL_QUADS, GL_BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 from pyglet.gl import  glEnable, glBlendFunc, glDisable
@@ -41,11 +42,12 @@ def gif( xy, path, wh = [None, None], batch = None, group = 0, oneTime = False):
     model = scale( model, wh )
     return model
 
-def img( xy, path, wh = [None, None], batch = None,group = 0, anchorXY = False ):
-    obj = pyRes.image( path + '.png')
+def img( xy, path = None, wh = [None, None], batch = None,group = 0, anchorXY = False ):
+    if path :obj = pyRes.image( path + '.png')
+    # else : obj = pyImg.get_buffer_manager().get_color_buffer().s
     if anchorXY: obj = objAnchorXY( obj )
     model = pySpt.Sprite( obj, x=xy[0], y=xy[1], batch = batch, group = genGroup( group ) )
-    model = scale( model, wh)
+    if path : model = scale( model, wh)
     return model
 
 def grid( xy, wh, rc, batch = None, group = 0 ):
@@ -72,8 +74,8 @@ def grid( xy, wh, rc, batch = None, group = 0 ):
 def quad( xy, wh, color = [0, 255, 242, 50 ], batch = None, group = 0, blend = False  ):
     x,y = xy[0], xy[1]
     w, h = wh[0], wh[1]
-    verts = ( "v2i", (    x,  y,  x+w,    y,  x+w,y+h,    x,y+h   )    )
-    color = (   'c4B', ( color*4 ) )
+    verts = ( 'v2i', ( x,  y,  x+w,    y,  x+w,y+h,    x,y+h   )    )
+    color = ( 'c4B', ( color*4 ) )
 
     if batch == None : return pyGra.vertex_list( 4 , verts, color )
     if blend    :   group = CustomGroup( pyGra.OrderedGroup( group ) )

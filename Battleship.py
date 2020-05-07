@@ -1,81 +1,64 @@
-import model as mdl
-import sys
-import media as mdi
 import pyglet as py
-import Global as glb
 from pyglet.window import mouse, key
-from Menu import Menu
-import time
-
+import pyglet.resource as pyRes
+import pyglet.sprite as pySpt
+import pyglet.graphics as pyGra
+import Global as glb
+import model as mdl
+import media as mdi
+import Menu
 class Battleship(py.window.Window):
     def __init__(self, *args, **kwargs):
-        self.introVid = mdi.vid('video/intro/vlVid')
-        self.introVid.volume = 0.0
-        self.introAud = mdi.aud('video/intro/vlAud')
+
+        #Window Configuration
         super().__init__(*args,**kwargs)
+        glb.wh = [ self.width, self.height ]
+        self.intro = glb.IntroVid()
+        self.introAud = mdi.aud( glb.Path.introAud )
         self.set_minimum_size(1280,720)
         self.frame_rate = 1/60.0
         self.fps_display = py.window.FPSDisplay(self)
 
-        # Default Configuration
-        py.gl.glClearColor(0.0,0.0,0.0,1.0)
+        #Default Configuration
+        py.gl.glClearColor(0.0,100.0,0.0,1.0)
         glb.wh = [ self.width, self.height ]
 
-        # Resource Loader
-        self.loadResource()
-        if glb.gameStatus == glb.INTRO :    
-            self.introVid.play()
-        if glb.gameStatus <= glb.MAIN_MENU :    
-            self.introAud.play()
+        # self.intro.vid.play()
+        self.introAud.play()
 
     def on_draw(self):
         self.clear()
-
-        # Intro
-        if glb.gameStatus == glb.INTRO:
-            self.drawGameIntro()
-
-        # Main Menu
-        elif glb.gameStatus == glb.MAIN_MENU :
-                self.menu[ glb.gameStatus ].draw()
-        
+        glb.onScreen.draw()
         self.fps_display.draw()
 
-    def update( self, dt ):
-        pass            
-            
+    def update(self, dt):
+        pass
 
 # Mouse
-    def on_mouse_motion(self,x, y, dx, dy):
-        
-        if glb.gameStatus == glb.MAIN_MENU :
-            self.menu[ glb.gameStatus ].mouseMotion( [x,y] )
-        
-    def on_mouse_press(self, x, y, button, modifiers):
-        if glb.gameStatus == glb.MAIN_MENU :
-            self.menu[ glb.gameStatus ].mousePress( [x,y] )
-            
-        if button == mouse.LEFT :
-            pass
-        if button == mouse.RIGHT :
-            pass
+    def on_mouse_motion( self, x, y, dx, dy ) :
+        glb.onScreen.mouseMotion( [x,y] )
 
-    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        if glb.gameStatus == glb.MAIN_MENU :
-            self.menu[ glb.gameStatus ].mouseDrag( [x,y] )
+    def on_mouse_press( self, x, y, button, modifiers ) :
+        if button == mouse.LEFT  : glb.onScreen.mousePress( [x,y], 'l' )            
+        if button == mouse.RIGHT : glb.onScreen.mousePress( [x,y], 'r' )
+
+    def on_mouse_drag( self, x, y, dx, dy, button, modifiers ) :
+        if button == mouse.LEFT  : glb.onScreen.mouseDrag( [x,y], 'l' )            
+        if button == mouse.RIGHT : glb.onScreen.mouseDrag( [x,y], 'r' )
+
+    def on_mouse_release( self, x, y, button, modifiers ) :
+        if button == mouse.LEFT  : glb.onScreen.mouseRelease( [x,y], 'l' )            
+        if button == mouse.RIGHT : glb.onScreen.mouseRelease( [x,y], 'r' )
 
 
-    def on_mouse_release(self, x, y, button, modifiers):
-        if glb.gameStatus == glb.MAIN_MENU :
-            glb.gameStatus = self.menu[ glb.gameStatus ].mouseRelease( [x,y] )
-            if glb.gameStatus == glb.EXIT :
-                sys.exit()
-                
-#  Key
+ #keys
     def on_key_press(self, symbol, modifiers):
+        if(symbol == key.ESCAPE):
+            Menu.PauseMenu()
         if(symbol == key.Q):
+            Menu.PauseMenu()
             pass
-        
+
         if(symbol == key.A):
             pass
 
@@ -84,29 +67,37 @@ class Battleship(py.window.Window):
 
         if(symbol == key.S):
             pass
-                
+
         if(symbol == key.E):
             pass
 
         if(symbol == key.D):
             pass
-        
+
+        if(symbol == key.R):
+            pass
+
+        if(symbol == key.F):
+            pass
+
+        if(symbol == key.T):
+            pass
+
+        if(symbol == key.G):
+            pass
+
+        if(symbol == key.Y):
+            pass
+        if(symbol == key.H):
+            pass
+        if(symbol == key.U):
+            pass
+        if(symbol == key.J):
+            pass
+
     def on_key_release(self, symbol, modifiers):
         pass            
-
-# Helpers
-    def drawGameIntro( self ) :
-        try : self.introVid.get_texture().blit(0,0,width = glb.wh[0],height = glb.wh[1])
-        except : glb.gameStatus = glb.MAIN_MENU ; self.introVid.delete()
-       
-# Resource loader
-    def loadResource( self ) :
-
-        # Menu
-        self.menu = []
-        for menuList in glb.menuData :
-            self.menu.append( Menu( menuList ) )
-        
+               
     def on_resize(self, width, height):
         width = max(1, width)
         height = max(1, height)
