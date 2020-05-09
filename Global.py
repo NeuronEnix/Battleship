@@ -18,7 +18,7 @@ class Path :
     introVid            = 'vid/intro'
 
     # Image
-    shipImg             = 'img/ship'
+    shipImg             = 'img/ship/'
     crosshairImg        = 'img/crosshair'
     misfireImg          = 'img/misfire'
 
@@ -30,12 +30,14 @@ class Path :
 
 
 p = Path
-
+# Preloading
 mdl.gif( [0,0],  p.bgGif)
 mdl.gif( [0,0],  p.oceanGif)
 mdl.gif( [0,0],  p.explosionGif)
 mdl.gif( [0,0],  p.smokeGif)
-
+for i in range( 4 ) :
+    for j in range( 4 ) :
+        mdl.img([0,0], p.shipImg +  str(i) + str(j)  )
 
 # Group
 cc = 0

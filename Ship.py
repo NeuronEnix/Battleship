@@ -6,7 +6,6 @@ GameModel = GameModel.GameModel
 
 shipLength = [ 2, 3, 4, 5 ]
 shipCount = len( shipLength )
-path = 'img/ship/'
 
 cc = 0 
 gShipGrid   = cc ; cc += 1
@@ -59,7 +58,7 @@ class Ship( GameModel ):
 
 # Helpers
     def newShip( self, xy = None ) :
-        shipPath  = path +  str(self.id) + str(self.orientation)
+        shipPath  = glb.Path.shipImg +  str(self.id) + str(self.orientation)
         wh = list(self.lb)
         rc = [1, self.length ]
         if xy == None : xy = self.xy
