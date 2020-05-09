@@ -1,15 +1,40 @@
 import model as mdl
-from math import floor
-
+import media as mdi
+import math
+import Global as glb
+floor = math.floor
 def inRange( point, lr ) :
     return lr[0] <= point and point <= lr[1]
 
 class GameModel :
-    def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False ) :
+    def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False, highlightAudPath = None ) :
         self._xy, self._wh, self._rc  = list( xy ), list( wh ), list( rc )
         self.batch, self.group = batch, group
         self._grid = None 
         self.grid = grid
+        self.prevQuadInd = [-1,-1]
+        self.highlightAudPath = highlightAudPath
+        self.activeQuad = None
+
+    def unHighlightQuad( self ) :
+        if self.activeQuad :
+            self.activeQuad.delete() 
+            self.activeQuad = None
+        self.prevQuadInd = [-1,-1]
+
+    def highlightQuadAtXY( self, xy, quadColor, highlight = True ) :
+        if highlight and self.inside( xy ) :
+            ind = self.XYToIndex( xy )
+            if self.prevQuadInd != ind :
+                if self.activeQuad :
+                    self.activeQuad.delete()
+                xy = self.indexToXY( ind )
+                self.prevQuadInd = list( ind )
+                self.activeQuad = mdl.quad( xy, self.subWH,  color = quadColor, batch= self.batch, group = self.group+2 , blend = True )
+                self.batch.invalidate()
+                if self.highlightAudPath:
+                    mdi.aud( self.highlightAudPath ).play()
+        else : self.unHighlightQuad()
 
     def indexToXY( self, ind ) :
         ind = list( ind )
@@ -64,6 +89,23 @@ class GameModel :
         yInside = inRange( xy[1], [objXY[1], objXY[1]+ objWH[1]] ) or inRange ( xy[1] + wh[1], [objXY[1], objXY[1]+ objWH[1]] )
         return xInside and yInside
 
+    @staticmethod
+    def draw() :                     pass
+
+    @staticmethod
+    def update() :                     pass
+
+    @staticmethod
+    def mouseMotion( xy ) :          pass
+
+    @staticmethod
+    def mousePress( xy, button ) :   pass
+
+    @staticmethod
+    def mouseDrag( xy, button ) :    pass
+
+    @staticmethod
+    def mouseRelease( xy, button ) : pass
 
     def g_xy( self ):
         return list( self._xy )
