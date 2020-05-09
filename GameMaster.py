@@ -135,6 +135,7 @@ class GameMaster :
         elif self._status == GS.SET_PLAYER :
             return self.setPlayerMousePress( xy, button )
         self.player[ self.ind ].mousePress( xy, button )
+        return None
         
     def mouseDrag( self, xy, button ) :   
         if self._status == GS.SET_PLAYER :
@@ -159,6 +160,7 @@ class GameMaster :
         mdl.quad( [0, 0], [glb.wh[0], glb.wh[1] - 100], [0,0,0,100], self.batch, group = gCrosshair, blend = True)
         mdl.quad( self.button.xy, self.button.wh, [0, 159, 217,150], batch = self.batch , group = gCrosshair + 1, blend = True )          
         mdl.label( lblXY, lblWH, 'Main Menu', batch = self.batch, group = gCrosshair + 2 )
+        self.ind = 0
     def archivePlayer1( self ) :
         return self.player[ 0 ].archive()
     def archivePlayer2( self ) :

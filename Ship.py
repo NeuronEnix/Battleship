@@ -38,12 +38,13 @@ class Ship( GameModel ):
         if self.inside( xy ) :
             ind = self.XYToIndex( xy )
             if self.health:
-                    if self.explodeAt( ind ) :
-                        if self.health == 0 :
-                            self.model.visible = True
-                            self.initiateMassExplosion()
-            return True
-        return False
+                if self.explodeAt( ind ) :
+                    if self.health == 0 :
+                        self.model.visible = True
+                        self.initiateMassExplosion()
+                    return 1
+            return 0
+        return -1
 
 # Orientation 
     def horizontal( self ) :

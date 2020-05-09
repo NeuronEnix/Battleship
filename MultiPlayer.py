@@ -1,6 +1,5 @@
 import Global as glb
 import GameMaster 
-import pyglet.graphics as pyGra
 
 GS = GameMaster.GS
 GameMaster = GameMaster.GameMaster

@@ -52,7 +52,13 @@ class GameStatus :
     SINGLE_PLAYER = cc ; cc += 1
     MULTI_PLAYER = cc ; cc += 1
     LAN = cc ; cc += 1
+    HOST = cc ; cc += 1
+    HOSTING = cc ; cc += 1
+    JOIN = cc ; cc += 1
+    CONNECT = cc ; cc += 1
+    PLAYING = cc ; cc += 1
     RESUME = cc ; cc += 1
+    CANCEL = cc ; cc += 1
     EXIT = cc ; cc += 1
     gameStatus = INTRO
 
@@ -65,6 +71,9 @@ class Nothing :
     def draw() :                     pass
 
     @staticmethod
+    def update() :                     pass
+
+    @staticmethod
     def mouseMotion( xy ) :          pass
 
     @staticmethod
@@ -75,6 +84,9 @@ class Nothing :
 
     @staticmethod
     def mouseRelease( xy, button ) : pass
+
+    @staticmethod
+    def keyPress( xy, button ) : pass
 
 
 class IntroVid( Nothing ) : 

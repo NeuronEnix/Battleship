@@ -33,11 +33,16 @@ class Player( GameModel ):
         if self.inside( xy ) :
             ind = self.XYToIndex( xy )
             for ship in self.ships :
-                if ship.hit( xy ) :
-                    self.hitInd.add( str( ind ) )
+                status = ship.hit( xy ) 
+
+                if status == -1 :
+                    continue
+
+                if status == 1 :
                     if ship.health == 0 :
                         self.health -=1
-                    return True
+                self.hitInd.add( str( ind ) )
+                return True
             else:
                 if ( str(ind) in self.hitInd ) == False :
                     self.hitInd.add( str( ind ) )
