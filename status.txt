@@ -11,61 +11,23 @@ MileStone:
     | - adding sound
     | - intro
     | - Menu (main_menu)
-    x - batches
+    | - batches
+    | - Multi-Player
+    | - Lan-Play
     x - Scaling all models based on xy and wh
 
 Working on:
-    - adding lan
-
+    fixing posible bugs
+    
 
 Commit:
-    - changed code structure
-        - GameModel <- Explosion
-        - GameModel <- Ship
-        - GameModel <- Player
-    - SidePanel.py
-    - Added GameMaster
-        - Controls gameplay ( not done )
-        - Need seriouse refactor
-    - Added quad to model.py
-    - Quads can be added to batch retaining blending
-
-    - audio has to be corrected
-    - In Menu.py  PauseMenu needs rework at key press
+    -Some bug fix
+    - added Lan play ( needs rework )
 
 
 Note :
     - GameMaster.py is a mess needs refactoring
         -specially def setBattleField
-
-
-Multiplayer
-    init()
-        self.gm = GM()
-        self.gm.setP1()
-
-    press():
-        status = gm.press()
-        if ststus == playing :
-            
-        self.status == playerSetup :
-           doSetupStuffs()
-
-
-
-    setupStuffs:
-     if status == gs.playerSetupConfirm
-                self.gm.setP2()
-            else:
-                self.p1 = self.gm.player[0].archive
-                self.p2 = self.gm.player[1].archive
-                self.gm.setBattlefield(self.p1,self.p2)
-
-
-
-
-
-
 
 
 
@@ -87,15 +49,3 @@ def makeBatch( groupList ) :
             model.batch = batch
     return batch
 
-Ready!
-self.qxy = [1188, 2]
-self.qwh = [172, 80]
-self.txy = [31, 21]
-self.dd()
-def dd( self ) :
-    self.lb = py.text.Label('Ready!',
-                  font_name='Times New Roman',
-                  font_size=30,
-                  x=self.qxy[0]+self.txy[0],
-                  y=self.qxy[1] +self.txy[1])
-    self.qd = Quad( self.qxy, self.qwh )
