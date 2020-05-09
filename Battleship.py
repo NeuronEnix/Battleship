@@ -32,7 +32,7 @@ class Battleship(py.window.Window):
         self.fps_display.draw()
 
     def update(self, dt):
-        pass
+        glb.onScreen.update()
 
 # Mouse
     def on_mouse_motion( self, x, y, dx, dy ) :
@@ -53,51 +53,11 @@ class Battleship(py.window.Window):
 
  #keys
     def on_key_press(self, symbol, modifiers):
-        if(symbol == key.ESCAPE):
+        if symbol == key.ESCAPE and glb.GameStatus.gameStatus == glb.GameStatus.PLAYING :
             Menu.PauseMenu()
-        if(symbol == key.Q):
-            Menu.PauseMenu()
-            pass
-
-        if(symbol == key.A):
-            pass
-
-        if(symbol == key.W):
-            pass
-
-        if(symbol == key.S):
-            pass
-
-        if(symbol == key.E):
-            pass
-
-        if(symbol == key.D):
-            pass
-
-        if(symbol == key.R):
-            pass
-
-        if(symbol == key.F):
-            pass
-
-        if(symbol == key.T):
-            pass
-
-        if(symbol == key.G):
-            pass
-
-        if(symbol == key.Y):
-            pass
-        if(symbol == key.H):
-            pass
-        if(symbol == key.U):
-            pass
-        if(symbol == key.J):
-            pass
-
-    def on_key_release(self, symbol, modifiers):
-        pass            
-               
+        if glb.GameStatus.gameStatus == glb.GameStatus.JOIN and self.isNum( symbol ) :
+            glb.onScreen.keyPress( self.toNum( symbol ) )
+            
     def on_resize(self, width, height):
         width = max(1, width)
         height = max(1, height)
@@ -106,4 +66,14 @@ class Battleship(py.window.Window):
         py.gl.glLoadIdentity()
         py.gl.glOrtho(0, width, 0, height, -1, 1)
         py.gl.glMatrixMode(py.gl.GL_MODELVIEW)
-        
+
+    @staticmethod
+    def isNum( b ) :
+        if key.NUM_0 <= b <= key.NUM_9 or key._0 <= b <= key._9 or b == key.BACKSPACE: return True
+        return False
+    @staticmethod
+    def toNum( b ) :
+        if b == key.BACKSPACE : return -1
+        if key.NUM_0 <= b <= key.NUM_9 :
+            return b - key.NUM_0
+        return b - key._0            
