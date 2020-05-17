@@ -1,64 +1,59 @@
 import Global as glb
-import GameMaster 
+import GameMaster as GM
 import time
 import ast
-GS = GameMaster.GS
-GameMaster = GameMaster.GameMaster
 
-myInd = 0
-enemyInd = 1
+myTurn = 0
+enemyTrun = 1
+
 MOUSE_MOTION = 'm'
 MOUSE_PRESS = 'p'
 PLAYER_TIME = 't'
 PLAYER_ARCHIVE = 'a'
-cc = 0
-SET_PLAYER_1 = cc ; cc += 1
-WAITING_FOR_PLAYER_2 = cc ; cc += 1
-BATTLEFIELD = cc ; cc += 1
-class Lan ( GameMaster ):
+
+class Lan ( GM.GameMaster ):
     def __init__( self, socket ) :
-        super().__init__()
+        super().__init__( socket.socket.close )
         self.socket = socket
-        self.status = SET_PLAYER_1
-        self.setPlayer1( 'Player  1 ' )
-        self.p1ConfirmTime = None
-        self.p2ConfirmTime = None
-        self.pInd = enemyInd
+        self.setPlayer1( 'Player  1 ', onConfirm = self.playerSetupSeq )
+        self.p1ConfirmTime = self.p2ConfirmTime = None
+        self.playerTurn = myTurn
         glb.onScreen = self
 
     def playerSetupSeq( self ) :
         self.p1ConfirmTime = time.time()
+        
+        # Changing "Confirm" to "Waiting..." on SidePanel
+        sp = self.sidePanel
+        sp.optionList[-2] = ['Waiting...']
+        sp.resetPanel( ['Player  1 ', sp.optionList] )
+        
         self.socket.data = PLAYER_TIME + str( self.p1ConfirmTime )
-        self.sidePanel.setOptionAt(5,['Waiting...'])        
         self.p1Archive = self.archivePlayer1()
         self.decideFirstMove()
 
     def mouseMotion( self, xy ) :
-        if self._status == GS.PLAYING :
-            if self.ind == myInd :
-                return 
-            if self.player[ self.ind ].inside( xy ) :
-                ind = self.player[ self.ind ].XYToIndex( xy )
-                self.socket.data = MOUSE_MOTION + str( ind )
+        if self.forwardToSocket( xy, MOUSE_MOTION ) == False : return 
         super().mouseMotion( xy )
 
     def mousePress( self, xy , button ) :
-        if self._status == GS.PLAYING and button == 'l' :
-            if self.ind == myInd :
-                return
-            if self.player[ self.ind ].inside( xy ) :
-                ind = self.player[ self.ind ].XYToIndex( xy )
-                self.socket.data = MOUSE_PRESS + str( ind )
-        status = super().mousePress( xy ,'l')
-        # if self.status == SET_PLAYER_1 :
-        #     status = super().mousePress( xy, button )
-        if status == GS.SET_PLAYER_CONFIRM :
-            self.playerSetupSeq()            
+        
+        if button == 'l' and self.forwardToSocket( xy, MOUSE_PRESS ) == False : return 
+        super().mousePress( xy, button )
+           
+    def forwardToSocket( self, xy, tag ) :    
+        if self._status == GM.PLAYING :
+            if self.ind == enemyTrun : return False
+            if self.player[ not self.ind ].inside( xy ) :
+                ind = self.player[ not self.ind ].XYToIndex( xy )
+                self.socket.data = tag + str( ind )
+        return True
+
     def toXY( self, ind ) :
-        xy = self.player[ self.ind ].indexToXY( ind )
-        xy[0] +=10
-        xy[1] +=10
+        xy = self.player[ not self.ind ].indexToXY( ind )
+        xy[0] += 10  ;   xy[1] += 10
         return xy
+
     def update( self ) :
         data = self.socket.data
         if data :
@@ -66,6 +61,7 @@ class Lan ( GameMaster ):
             elif data[0] == MOUSE_PRESS     : super().mousePress      ( self.toXY(ast.literal_eval( data[1:] )), 'l' )
             elif data[0] == PLAYER_ARCHIVE  : self.setP2Archive     ( ast.literal_eval( data[1:] ) )
             elif data[0] == PLAYER_TIME     : self.enemyConfirmTime( float(data[1:]) )
+
     def enemyConfirmTime( self, p2ConfirmTime ) :
         self.p2ConfirmTime = p2ConfirmTime
         self.decideFirstMove()
@@ -73,12 +69,10 @@ class Lan ( GameMaster ):
     def decideFirstMove( self ) :
         if self.p1ConfirmTime and self.p2ConfirmTime :
             if self.p1ConfirmTime > self.p2ConfirmTime :
-                self.pInd = myInd
+                self.playerTurn = enemyTrun
             self.socket.data = PLAYER_ARCHIVE + str( self.p1Archive )
                                 
     def setP2Archive( self, p2Archive ) :
-        self.status = GS.PLAYING
-        self.setBattleField( [ self.p1Archive, p2Archive ], self.pInd, [ 'Player 1', 'Enemy' ] )
+        self.setBattleField( [ self.p1Archive, p2Archive ], self.playerTurn, [ 'Player 1', 'Enemy' ] )
 
-    def draw( self ) :
-        self.batch.draw()
+    def draw( self ) : self.batch.draw()

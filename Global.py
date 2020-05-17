@@ -1,10 +1,9 @@
 # Window Width and Height
 import model as mdl
 import media as mdi
-import Menu
 wh = []
 onScreen = None
-
+mainMenu = None
 class Path :
     # Audio
     explosionAud        = 'aud/explosion'
@@ -31,42 +30,16 @@ class Path :
 
 p = Path
 # Preloading
-mdl.gif( [0,0],  p.bgGif)
-mdl.gif( [0,0],  p.oceanGif)
-mdl.gif( [0,0],  p.explosionGif)
-mdl.gif( [0,0],  p.smokeGif)
-for i in range( 4 ) :
-    for j in range( 4 ) :
-        mdl.img([0,0], p.shipImg +  str(i) + str(j)  )
+# mdl.gif( [0,0],  p.bgGif)
+# mdl.gif( [0,0],  p.oceanGif)
+# mdl.gif( [0,0],  p.explosionGif)
+# mdl.gif( [0,0],  p.smokeGif)
+# for i in range( 4 ) :
+#     for j in range( 4 ) :
+#         mdl.img([0,0], p.shipImg +  str(i) + str(j)  )
 
 # Group
-cc = 0
-class Group :
-    MAIN_MENU = cc ; cc += 1
-    SHIP = cc ; cc += 1
 
-
-# GameStatus
-cc = 0
-class GameStatus :
-    INTRO = cc ; cc += 1
-    MAIN_MENU = cc ; cc += 1
-    SINGLE_PLAYER = cc ; cc += 1
-    MULTI_PLAYER = cc ; cc += 1
-    LAN = cc ; cc += 1
-    HOST = cc ; cc += 1
-    HOSTING = cc ; cc += 1
-    JOIN = cc ; cc += 1
-    CONNECT = cc ; cc += 1
-    PLAYING = cc ; cc += 1
-    RESUME = cc ; cc += 1
-    CANCEL = cc ; cc += 1
-    EXIT = cc ; cc += 1
-    gameStatus = INTRO
-
-
-def reduceTo( val, percentage ) :
-    return val * percentage // 100
 
 class Nothing :
     @staticmethod
@@ -91,17 +64,17 @@ class Nothing :
     def keyPress( xy, button ) : pass
 
 
+
 class IntroVid( Nothing ) : 
     def __init__( self ) :
         global onScreen
         vidPath = Path.introVid
         self.vid = mdi.vid( vidPath )
         self.vid.volume = 0.0
-        Menu.MainMenu()
-        onScreen = self
+        onScreen = mainMenu
     def draw( self ) :
         try : self.vid.texture.blit(0,0,width = glb.wh[0],height = glb.wh[1])
         except : 
-            gs = GameStatus
-            gs.gameStatus = gs.MAIN_MENU ; self.vid.delete() 
-            Menu.MainMenu()
+            global onScreen
+            self.vid.delete() 
+            onScreen = mainMenu

@@ -5,6 +5,10 @@ import pyglet.image as pyImg
 import pyglet.text as pyTxt
 from pyglet.gl import GL_LINES, GL_QUADS, GL_BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 from pyglet.gl import  glEnable, glBlendFunc, glDisable
+
+def reduceTo( val, percentage ) :
+    return val * percentage // 100
+
 def genGroup( group = 0 ) :
     return pyGra.OrderedGroup( group )
 
@@ -83,19 +87,21 @@ def quad( xy, wh, color = [0, 255, 242, 50 ], batch = None, group = 0, blend = F
     
     return batch.add( 4, GL_QUADS, group , verts, color )
 
-def label( xy, wh, text, size = 10, color = None, batch = None, group = 0, resize = True ) :
+
+def label( xy, wh, text, size = 10, color = None , batch = None, group = 0, resize = True, xyPercInside = None ) :
+    if xyPercInside : 
+        xy = [ 
+            xy[0] + reduceTo( wh[0], xyPercInside[0] ),
+            xy[1] + reduceTo( wh[1], xyPercInside[1] )
+        ]
     label = pyTxt.Label( 
-        text,
-        'Times New Roman',
-        size,
-        x = xy[0], y = xy[1],
+        text, 'Times New Roman', size,
+        x = xy[0], y = xy[1], 
         batch = batch, group = genGroup(group)
     )
     if resize :
-        while wh[0] > label.content_width and wh[1] > label.content_height :
-            label.font_size +=1
-        while wh[0] < label.content_width or wh[1] < label.content_height :
-            label.font_size -=1
-    if color : 
-        label.color = color
+        while wh[1] > label.content_height : label.font_size +=1
+        while wh[1] < label.content_height : label.font_size -=1
+
+    print(label.text , ' : ', label.font_size)
     return label
