@@ -13,12 +13,15 @@ gShip       = cc ; cc += 1
 gSmoke      = cc ; cc += 1
 gExp        = cc 
 
+MISS = -1
+EXPLODED = 1
+HIT = 0
+
 class Ship( GameModel ):
     def __init__( self, xy, lb, id, orientation = 1, batch = None, group = 0 ) :
-        self.batch = batch
-        self.group = group 
-        self.model = None
+        self.batch, self.group = batch, group
         self.lb, self.id ,self.orientation = lb, id, orientation
+        self.model = None
         self.health = self.length = shipLength[ self.id ]
         self.explodedAt = [ False ]*self.health
         self.newShip( xy )
@@ -41,22 +44,19 @@ class Ship( GameModel ):
                     if self.health == 0 :
                         self.model.visible = True
                         self.initiateMassExplosion()
-                    return 1
-            return 0
-        return -1
+                    return EXPLODED
+            return HIT
+        return MISS
 
 # Orientation 
-    def horizontal( self ) :
-        if self.orientation % 2 :   return True
-        return False
-    def vertical( self ) :
-        return not self.horizontal( )
+    def horizontal ( self ) : return       self.orientation % 2
+    def vertical   ( self ) : return not   self.orientation % 2
+        
     def rotate( self ) :
         self.orientation += 1
         self.orientation %= 4
         self.newShip(  )
 
-# Helpers
     def newShip( self, xy = None ) :
         shipPath  = glb.Path.shipImg +  str(self.id) + str(self.orientation)
         wh = list(self.lb)
@@ -87,14 +87,9 @@ class Ship( GameModel ):
                 xy = self.indexToXY( [i,j] )
                 mdl.gif( xy, glb.Path.explosionGif, self.subWH, self.batch, self.group + gExp, oneTime = True )
         mdi.aud( glb.Path.massExplosionAud ).play()
-# Property
+
     def s_xy( self, xy ) :
         super().s_xy( xy )
         self.model.x, self.model.y = xy[0], xy[1]
-        
     xy = property( GameModel.g_xy, s_xy )
-
-    # def s_wh( self, wh ) :
-    #     super().s_wh( wh )
-    #     self.model.width, self.model.height = wh[0], wh[1]
-    # wh = property( GameModel.g_wh, s_wh)
+    
