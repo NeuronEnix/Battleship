@@ -5,9 +5,13 @@ import GameModel
 import Ship
 GameModel = GameModel.GameModel
 
-shipCount = Ship.shipCount
-shipLength = Ship.shipLength
-Ship = Ship.Ship
+
+cc = 0 
+HIT = cc ; cc += 1
+MISS = cc ; cc += 1
+OUTSIDE = cc ; cc += 1
+ANNIHILATED = cc ; cc += 1
+
 cc = 0 
 gPlayerGrid = cc ; cc += 1
 gMisfire    = cc ; cc += 1
@@ -35,14 +39,15 @@ class Player( GameModel ):
             for ship in self.ships :
                 status = ship.hit( xy ) 
 
-                if status == -1 :
+                if status == Ship.MISS :
                     continue
 
-                if status == 1 :
+                if status == Ship.EXPLODED :
                     if ship.health == 0 :
                         self.health -=1
+                        if self.health == 0 : return ANNIHILATED
                 self.hitInd.add( str( ind ) )
-                return True
+                return HIT
             else:
                 if ( str(ind) in self.hitInd ) == False :
                     self.hitInd.add( str( ind ) )
@@ -50,8 +55,8 @@ class Player( GameModel ):
                     self.misfireList.append( mdl.img( xy, glb.Path.misfireImg, self.subWH, self.batch, self.group + gMisfire ) )
                     mdi.aud( glb.Path.misfireAud ).play()
                     self.crosshair.visible = False
-                    return False
-        return True
+                    return MISS
+        return OUTSIDE
     
     def mouseMotion( self, xy ):
         if self.inside( xy ):
@@ -95,12 +100,12 @@ class Player( GameModel ):
     def newShips( self ) :
         # xFactor is for arranging the ship and round() will arrange neeatly
         ships = []
-        xFactor = self.rc[0] / shipCount
-        for id in range( shipCount ) :
+        xFactor = self.rc[0] / Ship.shipCount
+        for id in range( Ship.shipCount ) :
             ships.append( 
-                Ship(
+                Ship.Ship(
                     self.indexToXY( [ round(id * xFactor), 0 ] ),
-                    [ shipLength[ id ] * self.subWH[0], self.subWH[1] ],
+                    [ Ship.shipLength[ id ] * self.subWH[0], self.subWH[1] ],
                     id, 1,
                     self.batch, gShip
                 )
@@ -128,9 +133,6 @@ class Player( GameModel ):
             self.rePosition( ship )
             ship.model.visible = False
 
-            
-        
-    
     def s_crosshairXY( self, xy ) :
         ind = self.XYToIndex( xy )
         if self.prevCroshairInd == ind :
