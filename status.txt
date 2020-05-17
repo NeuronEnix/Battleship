@@ -10,24 +10,23 @@ MileStone:
     | - mass explosion
     | - adding sound
     | - intro
-    | - Menu (main_menu)
+    | - Menu 
     | - batches
     | - Multi-Player
     | - Lan-Play
     x - Scaling all models based on xy and wh
 
 Working on:
-    fixing posible bugs
+    -adding pause menu
+    - fixing posible bugs
     
 
 Commit:
     -Some bug fix
-    - added Lan play ( needs rework )
+    - Rafactored game layouts and menu
 
 
 Note :
-    - GameMaster.py is a mess needs refactoring
-        -specially def setBattleField
 
 
 
@@ -49,3 +48,8 @@ def makeBatch( groupList ) :
             model.batch = batch
     return batch
 
+
+pyinstaller file ( many files with console)
+pyinstaller -w file ( many files without console)
+pyinstaller -F file ( build and exe file only )
+pyinstaller -i iconFile mainFile ( icon should be in .ico
