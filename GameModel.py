@@ -107,6 +107,12 @@ class GameModel :
     @staticmethod
     def mouseRelease( xy, button ) : pass
 
+    @staticmethod
+    def doNothing() : pass
+
+    @staticmethod
+    def keyPress( xy, button ) :   pass
+
     def g_xy( self ):
         return list( self._xy )
     def s_xy( self, xy ) :
