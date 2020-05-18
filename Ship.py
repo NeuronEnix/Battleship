@@ -19,6 +19,7 @@ HIT = 0
 
 class Ship( GameModel ):
     def __init__( self, xy, lb, id, orientation = 1, batch = None, group = 0 ) :
+        super().__init__( xy, [10,10], lb , batch, group + gShipGrid, True )
         self.batch, self.group = batch, group
         self.lb, self.id ,self.orientation = lb, id, orientation
         self.model = None
@@ -65,8 +66,8 @@ class Ship( GameModel ):
         if self.vertical() :
             wh.reverse()
             rc.reverse()
-        if self.model : self.model.delete()            
-        super().__init__( xy, wh, rc, self.batch, self.group + gShipGrid, True )
+        if self.model : self.model.delete()     
+        self._xy, self._wh, self._rc = xy, wh, rc
         self.model = mdl.img( xy, shipPath, wh, self.batch, self.group + gShip )
 
     def explodeAt( self, ind ) :
