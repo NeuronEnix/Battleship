@@ -1,9 +1,10 @@
 # Window Width and Height
 import model as mdl
 import media as mdi
+import Menu
 wh = []
 onScreen = None
-mainMenu = None
+menu = None #Initialized in IntroVid class
 class Path :
     # Audio
     explosionAud        = 'aud/explosion'
@@ -64,17 +65,17 @@ class Nothing :
     def keyPress( xy, button ) : pass
 
 
-
 class IntroVid( Nothing ) : 
     def __init__( self ) :
-        global onScreen
+        global onScreen, menu
+        menu = Menu.MainMenu()
         vidPath = Path.introVid
         self.vid = mdi.vid( vidPath )
         self.vid.volume = 0.0
-        onScreen = mainMenu
+        onScreen = menu
     def draw( self ) :
         try : self.vid.texture.blit(0,0,width = glb.wh[0],height = glb.wh[1])
         except : 
             global onScreen
             self.vid.delete() 
-            onScreen = mainMenu
+            onScreen = menu
