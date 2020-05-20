@@ -1,8 +1,6 @@
 import model as mdl
-import media as mdi
 import Global as glb
-import GameModel
-GameModel = GameModel.GameModel
+import GameModel as GM
 def reduceTo( val, percentage ) :
     return val * percentage // 100
 color = [
@@ -22,7 +20,7 @@ gGrid = cc ; cc += 1
 gQuad = cc ; cc += 1
 gText = cc ; cc += 1
 
-class SidePanel( GameModel ) :
+class SidePanel( GM.GameModel ) :
     def __init__( self, headerText, optionList, whPercent = [30,100], batch = None, group = 0, bgPath = None, fullScreenBlend = False ) :
         self.batch =  batch
         self.group = group 
