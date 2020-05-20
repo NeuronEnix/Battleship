@@ -13,7 +13,7 @@ PLAYER_ARCHIVE = 'a'
 
 class Lan ( GM.GameMaster ):
     def __init__( self, socket ) :
-        super().__init__( socket.socket.close )
+        super().__init__()
         self.socket = socket
         self.setPlayer1( 'Player  1 ', onConfirm = self.playerSetupSeq )
         self.p1ConfirmTime = self.p2ConfirmTime = None
