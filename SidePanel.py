@@ -48,6 +48,7 @@ class SidePanel( GameModel ) :
         if self.inside( xy ) :
             ind = self.XYToIndex( xy )[0]
             if len( self.optionList[ ind ] ) == 2 :
+                glb.Aud.mousePress.play()
                 self.optionList[ ind ][1]()
         return None
 
@@ -92,7 +93,7 @@ class SidePanel( GameModel ) :
         xyPerc = [5,2]
         xy = [ reduceTo( self.sidePanelWH[0], xyPerc[0] ), reduceTo( self.sidePanelWH[1], xyPerc[1] ) ]
         wh = [ self.sidePanelWH[0] - xy[0] - reduceTo( self.sidePanelWH[0], 2) , maxY - xy[1] ]
-        super().__init__( xy, wh, [ len( optionList ), 1 ], self.batch, self.group + gGrid , highlightAudPath = glb.Path.mouseOverAud )
+        super().__init__( xy, wh, [ len( optionList ), 1 ], self.batch, self.group + gGrid , mouseOverAud = True )
         self.optionLabels = None
         self.setLabels( optionList )
     

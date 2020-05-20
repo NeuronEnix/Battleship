@@ -1,18 +1,20 @@
 import sys
 import LAN
 import CustomSocket
-import model as mdl
 import Global as glb
 import SidePanel as sp
 import MultiPlayer as mp
 from pyglet.window import key
 import pyglet.graphics as pyGra
 
-ESTABLISH_CONNECTION = 2
-JOINING = 1
+JOINING = 0
+ESTABLISH_CONNECTION = 1
+menu = None # will get assigned to instance of MainMenu() in MainMenu().__init__()
+def display() : menu.mainMenu()
 class MainMenu( sp.SidePanel ):
         
     def __init__( self ) :
+        global menu     ; menu = self
         self.initInfo() ; self.socket = CustomSocket.CustomSocket()
         super().__init__(
             self.mainMenuInfo [ 0 ],
@@ -23,21 +25,25 @@ class MainMenu( sp.SidePanel ):
         )
         self.mainMenu() 
 
-    def mainMenu( self )    :  self.resetPanel( self.mainMenuInfo ) ; self.lanStatus = None ; glb.onScreen   = self 
-    def lanMenu ( self )    :  self.resetPanel( self.lanMenuInfo  ) ; self.lanStatus = None ; self.port      = ''
+    def mainMenu( self )    :  
+        self.lanStatus = None ; self.resetPanel( self.mainMenuInfo )
+        glb.onScreen   = self ; glb.Aud.intro  (                   )
+        
+    def lanMenu ( self )    :  self.resetPanel ( self.lanMenuInfo  ) ; self.lanStatus = None ; self.port      = ''
 
     def hostMenu( self )    :
-        self.hostMenuInfo[1][1][0] = str( self.socket.port )
-        self.resetPanel( self.hostMenuInfo )
-        self.connect   (                   )
+        self.hostMenuInfo[1][1][0] = str( self.socket.port  )
+        self.resetPanel                 ( self.hostMenuInfo )
+        self.connect                    (                   )
     
     def joinMenu( self ) :
         self.lanStatus          =   JOINING
         self.joinMenuInfo[1][-2] = [ 'Connect', self.connect ]
-        self.resetPanel           ( self.joinMenuInfo       )
+        self.resetPanel            ( self.joinMenuInfo       )
     
     def connect( self ) :
         if  self.lanStatus == JOINING   : 
+            if not self.port or 0 <= int( self.port ) <= 1023 : return 
             self.port                   = int( self.port       )
             self.optionList  [-2]       =    [ 'Connecting...' ]
             self.optionLabels[-2].text  =      'Connecting...'
@@ -52,7 +58,7 @@ class MainMenu( sp.SidePanel ):
             num = self.toNum( btn )
             if   num                == -1 : self.port      = self.port[:-1] # On Backspace
             elif num                == -2 : self.connect() ; return         # On Enter
-            elif len( self.port )   <   5 : self.port += str( num )
+            elif len( self.port )   <   5 : self.port += str( num )         # On Numbers 
             self.optionLabels[1].text = 'ID : ' + self.port
                     
     def initInfo( self ) :
@@ -88,7 +94,6 @@ class MainMenu( sp.SidePanel ):
     def isValid( b ) :
         if key.NUM_0 <= b <= key.NUM_9 or key._0 <= b <= key._9 or b == key.BACKSPACE or b == key.ENTER: return True
         return False
-
     @staticmethod
     def toNum( b ) :
         if b == key.BACKSPACE    : return -1

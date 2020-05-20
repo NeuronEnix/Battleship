@@ -7,14 +7,14 @@ def inRange( point, lr ) :
     return lr[0] <= point and point <= lr[1]
 
 class GameModel :
-    def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False, highlightAudPath = None ) :
+    def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False, mouseOverAud = False ) :
         self._xy, self._wh, self._rc  = list( xy ), list( wh ), list( rc )
         self.batch, self.group = batch, group
         self._grid = None 
         self.grid = grid
         self.prevQuadInd = [-1,-1]
-        self.highlightAudPath = highlightAudPath
         self.activeQuad = None
+        self.mouseOverAud = mouseOverAud
 
     def unHighlightQuad( self ) :
         if self.activeQuad :
@@ -32,8 +32,8 @@ class GameModel :
                 self.prevQuadInd = list( ind )
                 self.activeQuad = mdl.quad( xy, self.subWH,  color = quadColor, batch= self.batch, group = self.group+2 , blend = True )
                 self.batch.invalidate()
-                if self.highlightAudPath:
-                    mdi.aud( self.highlightAudPath ).play()
+                if self.mouseOverAud:
+                    glb.Aud.mouseOver.play()
         else : self.unHighlightQuad()
 
     def indexToXY( self, ind ) :

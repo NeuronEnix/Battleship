@@ -6,42 +6,37 @@ import Player
 import pyglet.graphics as pyGra
 import GameModel 
 
-gCrosshair = Player.gCrosshair
+def reduceTo( val, percentage ) :
+    return val * percentage // 100
+
 cc = 0 
 gOcean = cc ; cc += 1
 gFullQuad = cc ; cc += 1
 gTopPanel = gSidePanel = gPlayer = cc ; cc += 1
 gHeaderQuad = cc ; cc += 1
 gHeaderText = cc ; cc += 1
-def reduceTo( val, percentage ) :
-    return val * percentage // 100
 
-cc = 0 
 SETUP = cc ; cc += 1
 PLAYING = cc ; cc += 1
 VICTORY = cc ; cc += 1
-
-MULTI_PLAYER = cc ; cc += 1
-SINGLE_PLAYER = cc ; cc += 1
-LAN_PLAY = cc ; cc += 1
-    
     
 class GameMaster :
-    def __init__( self, onVictory = None ) :
-        self.onVictory = onVictory
+    def __init__( self ) :
         self.player = [ None ] * 2
         self.turnLbl = [ None ] * 2
         self.batch = self.fadeQuad = None
         self._status = SETUP
+        glb.Aud.baseSetup()
 
+        
     def setPlayer( self, playerName, onConfirm ) :
-
+        
         self.batch = pyGra.Batch()
         self.ocean = mdl.gif( [0,0], glb.Path.oceanGif , glb.wh, self.batch, gOcean )
         topPanelWHPerc = [30,100]
         self.sidePanel = sp.SidePanel(
             playerName, whPercent = topPanelWHPerc,
-            optionList = [ ['Place your'], ['Ships'], [],[],[], ['Confirm',onConfirm], [ 'Cancel', Menu.MainMenu ] ],
+            optionList = [ ['Place your'], ['Ships'], [],[],[], ['Confirm',onConfirm], [ 'Cancel', Menu.display ] ],
             batch = self.batch, group = gSidePanel
         )
         remainingWH = [ reduceTo( glb.wh[0], 100 - topPanelWHPerc[0] ), glb.wh[1] ]
@@ -60,6 +55,8 @@ class GameMaster :
              
 
     def setBattleField( self, playerArchive, playerInd, header ) :
+        glb.Aud.gameplay()
+        
         self.batch = pyGra.Batch()
         self.ocean = mdl.gif( [0,0], glb.Path.oceanGif , glb.wh, self.batch, gOcean )
         self._status = PLAYING
@@ -113,7 +110,7 @@ class GameMaster :
         wh = [ reduceTo( pWH[0], 50 )       ,  self.topPanelXY[1] - pXY[1] - pWH[1] - 10 ]
         xy = [ ( glb.wh[0] - wh[0] ) // 2   ,                       pXY[1] + pWH[1] + 5  ]
 
-        self.mainMenuButton = GameModel.GameModel( xy, wh, [1,1], self.batch, gPlayer, highlightAudPath = glb.Path.mouseOverAud )  
+        self.mainMenuButton = GameModel.GameModel( xy, wh, [1,1], self.batch, gPlayer, mouseOverAud = True )  
         mXY = self.mainMenuButton.xy
         mWH = self.mainMenuButton.wh
 
@@ -122,8 +119,6 @@ class GameMaster :
 
         wh[1] = reduceTo( wh[1], 85 )
         mdl.label( xy, wh, 'Main Menu', size = 49, batch = self.batch, group = gHeaderText, xyPercInside = [ 5, 20 ] )
-        if self.onVictory : self.onVictory()  
-            
 
     def setFader( self, ind ) :
         if self.fadeQuad :  self.fadeQuad.delete()
@@ -145,7 +140,7 @@ class GameMaster :
         elif self._status == SETUP :
             self.sidePanel.mousePress( xy, button )
             self.player[ self.ind ].mousePress( xy, button )
-        elif self._status == VICTORY and self.mainMenuButton.inside( xy ) : Menu.MainMenu()
+        elif self._status == VICTORY and self.mainMenuButton.inside( xy ) :  Menu.display()
 
     def mouseDrag( self, xy, button ) :   
         if self._status == SETUP :

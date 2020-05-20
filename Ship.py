@@ -1,5 +1,4 @@
 import model as mdl
-import media as mdi
 import Global as glb
 import GameModel
 GameModel = GameModel.GameModel
@@ -77,7 +76,7 @@ class Ship( GameModel ):
         xy = self.indexToXY( ind )
         mdl.gif( xy, glb.Path.explosionGif , self.subWH, self.batch, self.group + gExp , oneTime = True )
         mdl.gif( xy, glb.Path.smokeGif, self.subWH, self.batch, self.group + gSmoke)
-        mdi.aud( glb.Path.explosionAud ).play()
+        glb.Aud.explosion.play()
         self.health -=1
         self.explodedAt[ i ] = True
         return True
@@ -87,7 +86,7 @@ class Ship( GameModel ):
             for j in range( self.rc[1] ) :
                 xy = self.indexToXY( [i,j] )
                 mdl.gif( xy, glb.Path.explosionGif, self.subWH, self.batch, self.group + gExp, oneTime = True )
-        mdi.aud( glb.Path.massExplosionAud ).play()
+        glb.Aud.massExplosion.play()
 
     def s_xy( self, xy ) :
         super().s_xy( xy )

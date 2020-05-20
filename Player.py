@@ -1,5 +1,4 @@
 import model as mdl
-import media as mdi
 import Global as glb
 import GameModel
 import Ship
@@ -53,7 +52,7 @@ class Player( GameModel ):
                     self.hitInd.add( str( ind ) )
                     xy = self.indexToXY( ind )
                     self.misfireList.append( mdl.img( xy, glb.Path.misfireImg, self.subWH, self.batch, self.group + gMisfire ) )
-                    mdi.aud( glb.Path.misfireAud ).play()
+                    glb.Aud.misfire.play()
                     self.crosshair.visible = False
                     return MISS
         return OUTSIDE

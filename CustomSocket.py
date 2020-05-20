@@ -36,10 +36,7 @@ class CustomSocket :
         except:
             pass
         return False
-    
-    def __del__(self):
-        self.socket.close()
-        
+            
     def s_data( self, data ) :
         self.socket.send( bytes( data, 'utf-8' ) )
     
