@@ -17,10 +17,10 @@ MileStone:
     x - Scaling all models based on xy and wh
 
 Working on:
-    -adding pause menu
-    - fixing posible bugs
-    
-
+    - moved Intro To Battleship.py
+    - deleted media.py : aud() moved to Gloabal.py ( renamed to audio )
+    - moved gif, img, aud, vid to 'res' dir   
+    - removed media imports
 Commit:
     -Some bug fix
     - Rafactored game layouts and menu
