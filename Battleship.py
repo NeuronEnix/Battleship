@@ -1,6 +1,9 @@
 import pyglet as py
 import Global as glb
+import Menu
+
 mouseButton = [ None,'l','m',None,'r',None, None]
+
 class Battleship( py.window.Window ):
     def __init__( self, *args, **kwargs ):
 
@@ -14,7 +17,7 @@ class Battleship( py.window.Window ):
         py.gl.glClearColor(0.0,0.0,0.0,1.0)
         glb.wh = [ self.width, self.height ]
 
-        glb.Intro().play()
+        Intro().play()
 
     def on_draw         ( self                         ) : self.clear() ; glb.onScreen.draw  () ; self.fps_display.draw()
     def update          ( self, dt                     ) :                glb.onScreen.update()
@@ -32,3 +35,13 @@ class Battleship( py.window.Window ):
         py.gl.glLoadIdentity(                       )
         py.gl.glOrtho       ( 0, wid, 0, hgt, -1, 1 )
         py.gl.glMatrixMode  ( py.gl.GL_MODELVIEW    )
+
+class Intro( glb.Nothing ) : 
+    def __init__( self ) :
+        glb.onScreen = self
+        self.vid     =  glb.pyMed.Player(                      )
+        self.vid.queue( glb.pyMed.load  ( 'res/vid/logo.mp4' ) )
+    def play( self ) : self.vid.play()
+    def draw( self ) :
+        try    : self.vid.texture.blit( 0,0,width = glb.wh[0],height = glb.wh[1] )
+        except : Menu.MainMenu        (                                          )
