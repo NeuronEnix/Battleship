@@ -28,7 +28,6 @@ class GameMaster :
         self._status = SETUP
         glb.Aud.baseSetup()
 
-        
     def setPlayer( self, playerName, onConfirm ) :
         
         self.batch = pyGra.Batch()
@@ -52,7 +51,6 @@ class GameMaster :
     def setPlayer2( self, name, onConfirm ) :
         self.ind = 1
         self.player[ self.ind ] = self.setPlayer( name, onConfirm )
-             
 
     def setBattleField( self, playerArchive, playerInd, header ) :
         glb.Aud.gameplay()

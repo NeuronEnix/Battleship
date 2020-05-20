@@ -6,16 +6,16 @@ import Menu
 wh = []
 onScreen = None
 class Aud :
-    mouseOver = mdi.aud('aud/mouseOver')
-    mousePress = mdi.aud('aud/misfire')
-    explosion = mdi.aud('aud/explosion')
-    massExplosion = mdi.aud('aud/massExplosion')
-    misfire = mdi.aud('aud/misfire')
+    mouseOver     = mdi.aud( 'aud/mouseOver'     )
+    mousePress    = mdi.aud( 'aud/misfire'       )
+    explosion     = mdi.aud( 'aud/explosion'     )
+    massExplosion = mdi.aud( 'aud/massExplosion' )
+    misfire       = mdi.aud( 'aud/misfire'       )
 
-    _curAud = _intro = mdi.aud('aud/intro', loop = True)
-    _baseSetup = mdi.aud('aud/baseSetup', loop = True)
-    _gameplay = mdi.aud('aud/gameplay', loop = True)
-    
+    _intro     = mdi.aud( 'aud/intro',     loop = True )
+    _baseSetup = mdi.aud( 'aud/baseSetup', loop = True )
+    _gameplay  = mdi.aud( 'aud/gameplay',  loop = True )
+    _curAud    = _intro
     @staticmethod
     def setCurAud( aud ) : Aud._curAud.pause(            ) ; Aud._curAud = aud ; Aud._curAud.play()  
     @staticmethod
@@ -37,7 +37,6 @@ class Path :
     explosionGif        = 'gif/explosion'
     smokeGif            = 'gif/smoke'
 
-
 p = Path
 # Preloading
 mdl.gif( [0,0],  p.bgGif)
@@ -50,25 +49,19 @@ for i in range( 4 ) :
 
 class Nothing :
     @staticmethod
-    def draw() :                     pass
-
+    def draw        (            ) : pass
     @staticmethod
-    def update() :                     pass
-
+    def update      (            ) : pass
     @staticmethod
-    def mouseMotion( xy ) :          pass
-
+    def mouseMotion ( xy         ) : pass
     @staticmethod
-    def mousePress( xy, button ) :   pass
-
+    def mousePress  ( xy, button ) : pass
     @staticmethod
-    def mouseDrag( xy, button ) :    pass
-
+    def mouseDrag   ( xy, button ) : pass
     @staticmethod
     def mouseRelease( xy, button ) : pass
-
     @staticmethod
-    def keyPress( button ) : pass
+    def keyPress    (     button ) : pass
 
 class Intro( Nothing ) : 
     def __init__( self ) :
