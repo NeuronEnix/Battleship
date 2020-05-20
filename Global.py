@@ -2,6 +2,10 @@
 import model as mdl
 import pyglet.media as pyMed
 
+def delIf( obj ) : 
+    if obj : obj.delete() 
+    return False
+    
 def deb( *args, **kargs ) :
     if True : print( *args, **kargs )
     
