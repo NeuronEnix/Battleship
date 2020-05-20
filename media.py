@@ -1,12 +1,14 @@
 import pyglet.media as pyMed
 
-def aud( path ) :
-    audio = pyMed.StaticSource(pyMed.load( path + '.wav', streaming = True ))
-    return audio
+def aud( path, loop = False ) :
+    audio = pyMed.load( path + '.wav')
+    if loop : 
+        plr = pyMed.Player()  ;   plr.queue( audio )    ;   plr.loop = True ;   return plr
+    return pyMed.StaticSource(audio)
         
 def vid( path , player = None ) :
-    medLoad = pyMed.load( path + '.mp4' )
+    vid = pyMed.load( path + '.mp4' )
     if player is None :    
         player = pyMed.Player()
-    player.queue(medLoad)
+    player.queue( vid )
     return player
