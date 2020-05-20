@@ -39,7 +39,7 @@ class Ship( GM.GameModel ):
                     return EXPLODED
             return HIT
         return MISS
-
+    
 # Orientation 
     def horizontal ( self ) : return       self.orientation % 2
     def vertical   ( self ) : return not   self.orientation % 2
@@ -57,9 +57,10 @@ class Ship( GM.GameModel ):
         if self.vertical() :
             wh.reverse()
             rc.reverse()
-        if self.model : self.model.delete()     
+        self.model = glb.delIf( self.model )
         self._xy, self._wh, self._rc = xy, wh, rc
         self.model = mdl.img( xy, shipPath, wh, self.batch, self.group + gShip )
+        self.highlightFullQuad = [0,255,0,65]
 
     def explodeAt( self, ind ) :
         i = max( ind )
@@ -85,3 +86,7 @@ class Ship( GM.GameModel ):
         self.model.x, self.model.y = xy[0], xy[1]
     xy = property( GM.GameModel.g_xy, s_xy )
     
+    def s_collision( self, collided ) : 
+        if collided : self.highlightFullQuad = [ 255, 0, 0, 65 ]
+        else : self.highlightFullQuad = [ 0, 255, 0, 65 ]
+    collision = property( None, s_collision )
