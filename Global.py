@@ -1,20 +1,25 @@
 # Window Width and Height
 import model as mdl
-import media as mdi
-import Menu
+import pyglet.media as pyMed
+
+def audio( name, loop = False ) :
+    aud = pyMed.load( 'res/aud/' + name + '.wav')
+    if loop : plr = pyMed.Player() ; plr.queue( aud ) ; plr.loop = True ; return plr
+    return pyMed.StaticSource( aud )
 
 wh = []
 onScreen = None
-class Aud :
-    mouseOver     = mdi.aud( 'aud/mouseOver'     )
-    mousePress    = mdi.aud( 'aud/misfire'       )
-    explosion     = mdi.aud( 'aud/explosion'     )
-    massExplosion = mdi.aud( 'aud/massExplosion' )
-    misfire       = mdi.aud( 'aud/misfire'       )
 
-    _intro     = mdi.aud( 'aud/intro',     loop = True )
-    _baseSetup = mdi.aud( 'aud/baseSetup', loop = True )
-    _gameplay  = mdi.aud( 'aud/gameplay',  loop = True )
+class Aud :
+    mouseOver     = audio( 'mouseOver'     )
+    mousePress    = audio( 'misfire'       )
+    explosion     = audio( 'explosion'     )
+    massExplosion = audio( 'massExplosion' )
+    misfire       = audio( 'misfire'       )
+
+    _intro     = audio( 'intro',     loop = True )
+    _baseSetup = audio( 'baseSetup', loop = True )
+    _gameplay  = audio( 'gameplay',  loop = True )
     _curAud    = _intro
     @staticmethod
     def setCurAud( aud ) : Aud._curAud.pause(            ) ; Aud._curAud = aud ; Aud._curAud.play()  
@@ -27,15 +32,15 @@ class Aud :
 
 class Path :
     # Image
-    shipImg             = 'img/ship/'
-    crosshairImg        = 'img/crosshair'
-    misfireImg          = 'img/misfire'
+    shipImg             = 'ship/'
+    crosshairImg        = 'crosshair'
+    misfireImg          = 'misfire'
 
     # Gif
-    bgGif               = 'gif/bg'
-    oceanGif            = 'gif/ocean'
-    explosionGif        = 'gif/explosion'
-    smokeGif            = 'gif/smoke'
+    bgGif               = 'bg'
+    oceanGif            = 'ocean'
+    explosionGif        = 'explosion'
+    smokeGif            = 'smoke'
 
 p = Path
 # Preloading
@@ -62,13 +67,3 @@ class Nothing :
     def mouseRelease( xy, button ) : pass
     @staticmethod
     def keyPress    (     button ) : pass
-
-class Intro( Nothing ) : 
-    def __init__( self ) :
-        global onScreen
-        self.vid = mdi.vid( 'vid/logo' )
-        onScreen = self
-    def play( self ) : self.vid.play()
-    def draw( self ) :
-        try : self.vid.texture.blit( 0,0,width = wh[0],height = wh[1] )
-        except : Menu.MainMenu()
