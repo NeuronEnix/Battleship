@@ -9,16 +9,9 @@ import GameModel
 def reduceTo( val, percentage ) :
     return val * percentage // 100
 
-cc = 0 
-gOcean = cc ; cc += 1
-gFullQuad = cc ; cc += 1
-gTopPanel = gSidePanel = gPlayer = cc ; cc += 1
-gHeaderQuad = cc ; cc += 1
-gHeaderText = cc ; cc += 1
-
-SETUP = cc ; cc += 1
-PLAYING = cc ; cc += 1
-VICTORY = cc ; cc += 1
+gOcean, gFullQuad, gTopPanel, gHeaderQuad, gHeaderText = list( range( 5 ) )
+gSidePanel = gPlayer = gTopPanel
+SETUP, PLAYING, VICTORY = list( range( 3 ) )
     
 class GameMaster :
     def __init__( self ) :

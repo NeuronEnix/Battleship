@@ -2,6 +2,9 @@
 import model as mdl
 import pyglet.media as pyMed
 
+def deb( *args, **kargs ) :
+    if True : print( *args, **kargs )
+    
 def audio( name, loop = False ) :
     aud = pyMed.load( 'res/aud/' + name + '.wav')
     if loop : plr = pyMed.Player() ; plr.queue( aud ) ; plr.loop = True ; return plr

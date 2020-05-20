@@ -1,3 +1,4 @@
+import Global as glb
 import pyglet.sprite as pySpt
 import pyglet.resource as pyRes
 import pyglet.graphics as pyGra
@@ -102,5 +103,5 @@ def label( xy, wh, text, size = 10, color = None , batch = None, group = 0, resi
         while wh[1] > label.content_height : label.font_size +=1
         while wh[1] < label.content_height : label.font_size -=1
 
-    print(label.text , ' : ', label.font_size)
+    glb.deb(label.text , ' : ', label.font_size)
     return label

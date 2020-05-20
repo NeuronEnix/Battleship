@@ -1,5 +1,6 @@
 import time
 import socket
+import Global as glb
 class CustomSocket :
     def __init__( self ) :
         
@@ -23,7 +24,7 @@ class CustomSocket :
     
     def isConnected( self, port = None ) :
         n = self.nextAddress()
-        print('IP : ',n, port )
+        glb.deb('IP : ',n, port )
         if port :
             self.socket.sendto(self.handshakeString.encode('utf-8'), ( n, port ) )
         try:

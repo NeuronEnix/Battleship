@@ -1,22 +1,12 @@
 import model as mdl
 import Global as glb
-import GameModel
+import GameModel as GM
 import Ship
-GameModel = GameModel.GameModel
 
+HIT, MISS, OUTSIDE, ANNIHILATED = list( range( 4 ) )
+gPlayerGrid, gMisfire, gShip, gCrosshair = list( range( 4 ) )
 
-cc = 0 
-HIT = cc ; cc += 1
-MISS = cc ; cc += 1
-OUTSIDE = cc ; cc += 1
-ANNIHILATED = cc ; cc += 1
-
-cc = 0 
-gPlayerGrid = cc ; cc += 1
-gMisfire    = cc ; cc += 1
-gShip       = cc ; cc += 1    
-gCrosshair  = cc + 4
-class Player( GameModel ):
+class Player( GM.GameModel ):
     def __init__( self, xy, wh, rc = [10,10], batch = None, group = 0) :
         self.batch, self.group = batch, group
         super().__init__( xy, wh, rc, batch, self.group + gPlayerGrid, True )

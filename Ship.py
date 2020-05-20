@@ -1,22 +1,14 @@
 import model as mdl
 import Global as glb
-import GameModel
-GameModel = GameModel.GameModel
+import GameModel as GM
 
 shipLength = [ 2, 3, 4, 5 ]
 shipCount = len( shipLength )
 
-cc = 0 
-gShipGrid   = cc ; cc += 1
-gShip       = cc ; cc += 1
-gSmoke      = cc ; cc += 1
-gExp        = cc 
+gShipGrid, gShip, gSmoke, gExp = list( range( 4 ) )
+MISS, EXPLODED, HIT = list( range( 3 ) )
 
-MISS = -1
-EXPLODED = 1
-HIT = 0
-
-class Ship( GameModel ):
+class Ship( GM.GameModel ):
     def __init__( self, xy, lb, id, orientation = 1, batch = None, group = 0 ) :
         super().__init__( xy, [10,10], lb , batch, group + gShipGrid, True )
         self.batch, self.group = batch, group
@@ -91,5 +83,5 @@ class Ship( GameModel ):
     def s_xy( self, xy ) :
         super().s_xy( xy )
         self.model.x, self.model.y = xy[0], xy[1]
-    xy = property( GameModel.g_xy, s_xy )
+    xy = property( GM.GameModel.g_xy, s_xy )
     

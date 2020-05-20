@@ -29,12 +29,13 @@ class GameModel :
                     self.activeQuad.delete()
                 xy = self.indexToXY( ind )
                 self.prevQuadInd = list( ind )
-                self.activeQuad = mdl.quad( xy, self.subWH,  color = quadColor, batch= self.batch, group = self.group+2 , blend = True )
+                self.activeQuad = mdl.quad( xy, self.subWH,  color = quadColor, batch= self.batch, group = self.group , blend = True )
                 self.batch.invalidate()
                 if self.mouseOverAud:
                     glb.Aud.mouseOver.play()
         else : self.unHighlightQuad()
-
+    def highlightAllQuad( self, quadColor ) : pass
+        
     def indexToXY( self, ind ) :
         ind = list( ind )
         if ind[0] >= self.rc[0] : ind[0] = self.rc[0] - 1

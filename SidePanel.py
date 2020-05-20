@@ -8,30 +8,17 @@ color = [
                 [0, 159, 217,150],  # HeaderQuad Color
                 [0, 255, 242, 50 ]  # SelectQuad Color
             ]
-cc = 0 
-SIDE_PANEL_COLOR = cc ; cc += 1
-HEADER_QUAD_COLOR = cc ; cc += 1
-HIGHLIGHT_QUAD_COLOR = cc ; cc += 1
-
-cc =  0
-gBG = cc ; cc += 1
-gSidePanel = cc ; cc += 1
-gGrid = cc ; cc += 1
-gQuad = cc ; cc += 1
-gText = cc ; cc += 1
+SIDE_PANEL_COLOR, HEADER_QUAD_COLOR, HIGHLIGHT_QUAD_COLOR = list( range( 3 ) )
+gBG, gSidePanel, gGrid, gQuad, gText = list( range( 5 ) )
 
 class SidePanel( GM.GameModel ) :
     def __init__( self, headerText, optionList, whPercent = [30,100], batch = None, group = 0, bgPath = None, fullScreenBlend = False ) :
-        self.batch =  batch
-        self.group = group 
+        self.batch, self.group = batch, group 
         self.sidePanelWH = [ reduceTo( glb.wh[0], whPercent[0] ), reduceTo( glb.wh[1], whPercent[1] ) ]
-        self.setBG( bgPath, group + gBG )
-        self.setSidePanel( color[ SIDE_PANEL_COLOR ], fullScreenBlend, group + gSidePanel )
-        self.setHeader( headerText, group + gText, color[ HEADER_QUAD_COLOR ], group + gQuad  )
+        self.setBG( bgPath )
+        self.setSidePanel( color[ SIDE_PANEL_COLOR ], fullScreenBlend )
+        self.setHeader( headerText, color[ HEADER_QUAD_COLOR ]  )
         self.setPanel( optionList )
-        self.prevInd = -1
-        self.activeQuad = None
-        self.group = group 
 
     def draw( self ) :
         self.batch.draw()
@@ -56,21 +43,21 @@ class SidePanel( GM.GameModel ) :
     def mouseRelease( self, xy, button ) :
         pass
     
-    def setBG( self, bgPath, group ) :
+    def setBG( self, bgPath ) :
         if bgPath : 
-            mdl.gif( [0,0], bgPath ,glb.wh, self.batch, group )
+            mdl.gif( [0,0], bgPath ,glb.wh, self.batch, self.group + gBG )
 
-    def setSidePanel( self, color, fullScreenBlend, group ) :
+    def setSidePanel( self, color, fullScreenBlend ) :
         if fullScreenBlend : SidePanelWH = glb.wh
         else : SidePanelWH = self.sidePanelWH
-        mdl.quad( [0,0], SidePanelWH, color, self.batch, group, blend = True )
+        mdl.quad( [0,0], SidePanelWH, color, self.batch, self.group + gSidePanel , blend = True )
         
-    def setHeader( self, text, textGroup, quadColor, quadGroup ) :
+    def setHeader( self, text, quadColor ) :
         self.headerXY = xy = [0, reduceTo( self.sidePanelWH[1], 80) ]
         wh = [ self.sidePanelWH[0], reduceTo( self.sidePanelWH[1], 12) ]
-        mdl.quad( xy, wh, quadColor, self.batch, quadGroup, blend = True )
+        mdl.quad( xy, wh, quadColor, self.batch, self.group + gQuad, blend = True )
         wh[1] = reduceTo( wh[1], 90 ) 
-        self.headerLbl = mdl.label( xy, wh, text, size = 54, batch = self.batch, group = textGroup , xyPercInside = [4,25] )
+        self.headerLbl = mdl.label( xy, wh, text, size = 54, batch = self.batch, group = self.group + gText , xyPercInside = [4,25] )
 
     def setLabels( self, optionList ) :
         self.optionList = optionList
