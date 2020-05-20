@@ -39,19 +39,18 @@ def objAnchorXY( obj ) :
     return obj
 
 
-def gif( xy, path, wh = [None, None], batch = None, group = 0, oneTime = False):
-    obj = pyRes.animation( path + '.gif' )
+def gif( xy, name, wh = [None, None], batch = None, group = 0, oneTime = False):
+    obj = pyRes.animation( 'res/gif/' + name + '.gif' )
     if oneTime : model = OneTimeSprite( xy, obj, batch = batch, group = genGroup( group ) )
     else       : model = pySpt.Sprite( obj, x=xy[0], y=xy[1], batch = batch, group = genGroup( group ) )
     model = scale( model, wh )
     return model
 
-def img( xy, path = None, wh = [None, None], batch = None,group = 0, anchorXY = False ):
-    if path :obj = pyRes.image( path + '.png')
-    # else : obj = pyImg.get_buffer_manager().get_color_buffer().s
+def img( xy, name = None, wh = [None, None], batch = None,group = 0, anchorXY = False ):
+    obj = pyRes.image( 'res/img/' + name + '.png')
     if anchorXY: obj = objAnchorXY( obj )
     model = pySpt.Sprite( obj, x=xy[0], y=xy[1], batch = batch, group = genGroup( group ) )
-    if path : model = scale( model, wh)
+    model = scale( model, wh)
     return model
 
 def grid( xy, wh, rc, batch = None, group = 0 ):
