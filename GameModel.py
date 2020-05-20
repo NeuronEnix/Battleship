@@ -9,33 +9,25 @@ class GameModel :
     def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False, mouseOverAud = False ) :
         self._xy, self._wh, self._rc  = list( xy ), list( wh ), list( rc )
         self.batch, self.group = batch, group
+        self.fullQuad = self.fullQuadColor = self.subQuad = None
         self._grid = None 
         self.grid = grid
         self.prevQuadInd = [-1,-1]
-        self.activeQuad = None
         self.mouseOverAud = mouseOverAud
-
-    def unHighlightQuad( self ) :
-        if self.activeQuad :
-            self.activeQuad.delete() 
-            self.activeQuad = None
-        self.prevQuadInd = [-1,-1]
 
     def highlightQuadAtXY( self, xy, quadColor, highlight = True ) :
         if highlight and self.inside( xy ) :
             ind = self.XYToIndex( xy )
             if self.prevQuadInd != ind :
-                if self.activeQuad :
-                    self.activeQuad.delete()
+                self.subQuad = glb.delIf( self.subQuad )
                 xy = self.indexToXY( ind )
                 self.prevQuadInd = list( ind )
-                self.activeQuad = mdl.quad( xy, self.subWH,  color = quadColor, batch= self.batch, group = self.group , blend = True )
+                self.subQuad = mdl.quad( xy, self.subWH, quadColor, self.batch, self.group, blend = True )
                 self.batch.invalidate()
                 if self.mouseOverAud:
                     glb.Aud.mouseOver.play()
-        else : self.unHighlightQuad()
-    def highlightAllQuad( self, quadColor ) : pass
-        
+        else : self.subQuad = glb.delIf( self.subQuad ) ; self.prevQuadInd = [-1,-1]
+
     def indexToXY( self, ind ) :
         ind = list( ind )
         if ind[0] >= self.rc[0] : ind[0] = self.rc[0] - 1
@@ -85,33 +77,33 @@ class GameModel :
     def on( self, obj ):
         xy, wh = self.xy, self.wh
         objXY, objWH = obj.xy, obj.wh
-        xInside = inRange( xy[0], [objXY[0], objXY[0]+ objWH[0] ]) or inRange ( xy[0] + wh[0], [objXY[0], objXY[0]+ objWH[0]] )
+        xInside = inRange( xy[0], [objXY[0], objXY[0]+ objWH[0]] ) or inRange ( xy[0] + wh[0], [objXY[0], objXY[0]+ objWH[0]] )
         yInside = inRange( xy[1], [objXY[1], objXY[1]+ objWH[1]] ) or inRange ( xy[1] + wh[1], [objXY[1], objXY[1]+ objWH[1]] )
         return xInside and yInside
 
     @staticmethod
-    def draw() :                     pass
+    def draw()                      : pass
 
     @staticmethod
-    def update() :                     pass
+    def update()                    : pass
 
     @staticmethod
-    def mouseMotion( xy ) :          pass
+    def mouseMotion( xy )           : pass
 
     @staticmethod
-    def mousePress( xy, button ) :   pass
+    def mousePress( xy, button )    : pass
 
     @staticmethod
-    def mouseDrag( xy, button ) :    pass
+    def mouseDrag( xy, button )     : pass
 
     @staticmethod
-    def mouseRelease( xy, button ) : pass
+    def mouseRelease( xy, button )  : pass
 
     @staticmethod
-    def doNothing() : pass
+    def doNothing()                 : pass
 
     @staticmethod
-    def keyPress( xy, button ) :   pass
+    def keyPress( xy, button )      : pass
 
     def g_xy( self ):
         return list( self._xy )
@@ -140,13 +132,18 @@ class GameModel :
     subWH = property( g_subWH, None )
     
     def s_grid( self, grid ) :
-        if self._grid :
-            self._grid.delete()
-            self._grid = None
+        self._grid = glb.delIf( self._grid )
         if grid :
             self._grid = mdl.grid(
             self._xy, self._wh, self._rc, 
             self.batch, self.group
         )
+        self.s_highlightFullQuad( self.fullQuadColor )
     grid = property( None, s_grid )
         
+    def s_highlightFullQuad( self, quadColor ) :
+        self.fullQuad = glb.delIf( self.fullQuad )
+        self.fullQuadColor = quadColor
+        if self.fullQuadColor : self.fullQuad = mdl.quad( self.xy, self.wh, quadColor, self.batch, self.group, blend = True )
+        self.batch.invalidate()
+    highlightFullQuad = property( None, s_highlightFullQuad )
