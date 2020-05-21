@@ -21,14 +21,18 @@ class GameMaster :
         self._status = SETUP
         glb.Aud.baseSetup()
 
-    def setPlayer( self, playerName, onConfirm ) :
+    def setupConfirmSeq( self ) : 
+        if self.player[ self.ind ].shipsColliding() : return 
+        self.onConfirm()
         
+    def setPlayer( self, playerName, onConfirm ) :
+        self.onConfirm = onConfirm
         self.batch = pyGra.Batch()
         self.ocean = mdl.gif( [0,0], glb.Path.oceanGif , glb.wh, self.batch, gOcean )
         topPanelWHPerc = [30,100]
         self.sidePanel = sp.SidePanel(
             playerName, whPercent = topPanelWHPerc,
-            optionList = [ ['Place your'], ['Ships'], [],[],[], ['Confirm',onConfirm], [ 'Cancel', Menu.display ] ],
+            optionList = [ ['Place your'], ['Ships'], [],[],[], ['Confirm', self.setupConfirmSeq ], [ 'Cancel', Menu.display ] ],
             batch = self.batch, group = gSidePanel
         )
         remainingWH = [ reduceTo( glb.wh[0], 100 - topPanelWHPerc[0] ), glb.wh[1] ]

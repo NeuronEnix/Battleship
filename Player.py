@@ -126,6 +126,11 @@ class Player( GM.GameModel ):
     def makeShipsVisible( self ) :
         for ship in self.ships :
             ship.model.visible = True
+    def shipsColliding( self ) :
+        for ship in self.ships : 
+            if ship.curCollisionStatus == True : return True
+        return False
+    
     def extract( self, data ) :
         for i in range( len( data ) ) :
             ship = self.ships[ i ]
