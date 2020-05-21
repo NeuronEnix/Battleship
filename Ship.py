@@ -4,7 +4,7 @@ import GameModel as GM
 
 shipLength = [ 2, 3, 4, 5 ]
 shipCount = len( shipLength )
-
+collisionColor = [ [ 0, 255, 0, 80 ], [ 255, 0, 0, 80 ] ]
 gShipGrid, gShip, gSmoke, gExp = list( range( 4 ) )
 MISS, EXPLODED, HIT = list( range( 3 ) )
 
@@ -14,6 +14,7 @@ class Ship( GM.GameModel ):
         self.batch, self.group = batch, group
         self.lb, self.id ,self.orientation = lb, id, orientation
         self.model = None
+        self.prevCollisionStatus = self.curCollisionStatus = False
         self.health = self.length = shipLength[ self.id ]
         self.explodedAt = [ False ]*self.health
         self.newShip( xy )
@@ -86,7 +87,11 @@ class Ship( GM.GameModel ):
         self.model.x, self.model.y = xy[0], xy[1]
     xy = property( GM.GameModel.g_xy, s_xy )
     
-    def s_collision( self, collided ) : 
-        if collided : self.highlightFullQuad = [ 255, 0, 0, 65 ]
-        else : self.highlightFullQuad = [ 0, 255, 0, 65 ]
+    def reColor( self ) :
+        if  self.prevCollisionStatus != self.curCollisionStatus :
+            self.prevCollisionStatus  = self.curCollisionStatus
+            self.highlightFullQuad    = collisionColor[ self.curCollisionStatus ]
+            
+    def s_collision( self, collision ) : 
+        self.curCollisionStatus = collision
     collision = property( None, s_collision )

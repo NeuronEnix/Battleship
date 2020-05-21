@@ -60,9 +60,8 @@ class Player( GM.GameModel ):
                 if ship.mousePress( xy ) :
                     self.activeShip = ship
                     break
-    k = 0
+
     def checkForCollision( self ) :
-        self.k+=1
         for ship in self.ships :
             ship.collision = False
         for i in range( len( self.ships ) -1 ) :
@@ -70,9 +69,8 @@ class Player( GM.GameModel ):
                 if self.ships[ i ].on( self.ships[ j ] ) :
                     self.ships[ j ].collision = True  
                     self.ships[ i ].collision = True
-            
-                    print(self.k,' Collision : ', self.ships[i].id, ' - ' , self.ships[j].id )
-            
+        for ship in self.ships : ship.reColor()            
+
     def mouseDrag( self, xy ) :
         if self.inside( xy ) :
             self.crosshairXY = xy
@@ -89,7 +87,7 @@ class Player( GM.GameModel ):
                 self.activeShip.rotate()
             self.rePosition( self.activeShip )
             self.activeShip = None
-            # self.checkForCollision()
+            self.checkForCollision()
             
     def rePosition( self, ship ):
         ship.xy = self.XYToXY( ship.xy, roundUP = True )

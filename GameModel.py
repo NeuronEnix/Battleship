@@ -3,9 +3,8 @@ import math
 import Global as glb
 floor = math.floor
 def inRange( point, lr ) :
-    return lr[0] <= point and point <= lr[1]
-
-class GameModel :
+    return lr[0] <= point <= lr[1]
+class GameModel( glb.Nothing ) :
     def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False, mouseOverAud = False ) :
         self._xy, self._wh, self._rc  = list( xy ), list( wh ), list( rc )
         self.batch, self.group = batch, group
@@ -24,8 +23,7 @@ class GameModel :
                 self.prevQuadInd = list( ind )
                 self.subQuad = mdl.quad( xy, self.subWH, quadColor, self.batch, self.group, blend = True )
                 self.batch.invalidate()
-                if self.mouseOverAud:
-                    glb.Aud.mouseOver.play()
+                if self.mouseOverAud : glb.Aud.mouseOver.play()
         else : self.subQuad = glb.delIf( self.subQuad ) ; self.prevQuadInd = [-1,-1]
 
     def indexToXY( self, ind ) :
@@ -68,42 +66,21 @@ class GameModel :
         xy, wh = self.xy, self.wh
         if isinstance( obj, list ) :
             objXY = obj
-            return inRange( objXY[0], [xy[0], xy[0]+wh[0]] ) and inRange( objXY[1], [xy[1], xy[1]+wh[1]] )
+            return        xy[0] <= objXY[0] <= xy[0]+wh[0]  and  xy[1] <= objXY[1] <= xy[1]+wh[1]
         objXY, objWH = obj.xy, obj.wh
-        xInside = inRange( xy[0], [objXY[0], objXY[0]+ objWH[0]] ) and inRange ( xy[0] + wh[0], [objXY[0], objXY[0]+ objWH[0]] )
-        yInside = inRange( xy[1], [objXY[1], objXY[1]+ objWH[1]] ) and inRange ( xy[1] + wh[1], [objXY[1], objXY[1]+ objWH[1]] )    
+        xInside = objXY[0] <= xy[0] <= objXY[0] + objWH[0]  and  objXY[0] <= xy[0] + wh[0] <= objXY[0] + objWH[0]
+        yInside = objXY[1] <= xy[1] <= objXY[1] + objWH[1]  and  objXY[1] <= xy[1] + wh[1] <= objXY[1] + objWH[1]    
         return xInside and yInside
-    
+        
     def on( self, obj ):
-        xy, wh = self.xy, self.wh
+        xy = [ self.xy[0] + 1, self.xy[1] + 1 ]
+        wh = [ self.wh[0] - 2, self.wh[1] - 2 ]
         objXY, objWH = obj.xy, obj.wh
-        xInside = inRange( xy[0], [objXY[0], objXY[0]+ objWH[0]] ) or inRange ( xy[0] + wh[0], [objXY[0], objXY[0]+ objWH[0]] )
-        yInside = inRange( xy[1], [objXY[1], objXY[1]+ objWH[1]] ) or inRange ( xy[1] + wh[1], [objXY[1], objXY[1]+ objWH[1]] )
+        xInside = objXY[0] < xy[0] < objXY[0] + objWH[0] or objXY[0] < xy[0] + wh[0] < objXY[0] + objWH[0]
+        yInside = objXY[1] < xy[1] < objXY[1] + objWH[1] or objXY[1] < xy[1] + wh[1] < objXY[1] + objWH[1]
+        if xInside : yInside = yInside or ( xy[1] < objXY[1] < xy[1] + wh[1] ) or ( xy[1] < objXY[1] + objWH[1] < xy[1] + wh[1] )
+        if yInside : xInside = xInside or ( xy[0] < objXY[0] < xy[0] + wh[0] ) or ( xy[0] < objXY[0] + objWH[0] < xy[0] + wh[0] )
         return xInside and yInside
-
-    @staticmethod
-    def draw()                      : pass
-
-    @staticmethod
-    def update()                    : pass
-
-    @staticmethod
-    def mouseMotion( xy )           : pass
-
-    @staticmethod
-    def mousePress( xy, button )    : pass
-
-    @staticmethod
-    def mouseDrag( xy, button )     : pass
-
-    @staticmethod
-    def mouseRelease( xy, button )  : pass
-
-    @staticmethod
-    def doNothing()                 : pass
-
-    @staticmethod
-    def keyPress( xy, button )      : pass
 
     def g_xy( self ):
         return list( self._xy )
