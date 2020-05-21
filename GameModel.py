@@ -2,8 +2,6 @@ import model as mdl
 import math
 import Global as glb
 floor = math.floor
-def inRange( point, lr ) :
-    return lr[0] <= point <= lr[1]
 class GameModel( glb.Nothing ) :
     def __init__( self, xy, wh, rc = [1,1], batch = None, group = None, grid = False, mouseOverAud = False ) :
         self._xy, self._wh, self._rc  = list( xy ), list( wh ), list( rc )
