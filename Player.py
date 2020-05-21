@@ -3,7 +3,7 @@ import Global as glb
 import GameModel as GM
 import Ship
 
-HIT, MISS, OUTSIDE, ANNIHILATED = list( range( 4 ) )
+HIT, MISS, OUTSIDE, INSIDE, ANNIHILATED = list( range( 5 ) )
 gPlayerGrid, gMisfire, gShip, gCrosshair = list( range( 4 ) )
 
 class Player( GM.GameModel ):
@@ -18,39 +18,37 @@ class Player( GM.GameModel ):
         
         self.ships = self.newShips()
         self.activeShip  = None
-        self.hitInd = set()
+        self.hitAt = [ [ False ] * 10  for _ in range( 10 ) ]
         self.misfireList = []
 
     # Return True if the player has to continue next move else false
     def hit( self, xy ) :
         if self.inside( xy ) :
             ind = self.XYToIndex( xy )
+            print( ind )
             for ship in self.ships :
-                status = ship.hit( xy ) 
 
-                if status == Ship.MISS :
-                    continue
-
-                if status == Ship.EXPLODED :
-                    if ship.health == 0 :
-                        self.health -=1
-                        if self.health == 0 : return ANNIHILATED
-                self.hitInd.add( str( ind ) )
+                shipStatus     =  ship.hit( xy ) 
+                if shipStatus  == Ship.MISS        : continue
+                if shipStatus  == Ship.ANNIHILATED : self.health -=1
+                if self.health == 0                : return ANNIHILATED
+                self.hitAt[ ind[0] ][ ind[1] ] = True
                 return HIT
-            else:
-                if ( str(ind) in self.hitInd ) == False :
-                    self.hitInd.add( str( ind ) )
-                    xy = self.indexToXY( ind )
-                    self.misfireList.append( mdl.img( xy, glb.Path.misfireImg, self.subWH, self.batch, self.group + gMisfire ) )
-                    glb.Aud.misfire.play()
-                    self.crosshair.visible = False
-                    return MISS
+
+            if not self.hitAt[ ind[0] ][ ind[1] ] :
+                self.hitAt[ ind[0] ][ ind[1] ] = True
+                xy = self.indexToXY( ind )
+                self.misfireList.append( mdl.img( xy, glb.Path.misfireImg, self.subWH, self.batch, self.group + gMisfire ) )
+                glb.Aud.misfire.play()
+                self.crosshair.visible = False
+                return MISS
+            return INSIDE
         return OUTSIDE
     
     def mouseMotion( self, xy ):
         if self.inside( xy ):
-            self.crosshair.visible = True
             self.crosshairXY = xy
+            self.crosshair.visible = True
         else:
             self.crosshair.visible = False
             
