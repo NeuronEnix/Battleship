@@ -12,8 +12,9 @@ SIDE_PANEL_COLOR, HEADER_QUAD_COLOR, HIGHLIGHT_QUAD_COLOR = list( range( 3 ) )
 gBG, gSidePanel, gGrid, gQuad, gText = list( range( 5 ) )
 
 class SidePanel( GM.GameModel ) :
-    def __init__( self, headerText, optionList, whPercent = [30,100], batch = None, group = 0, bgPath = None, fullScreenBlend = False ) :
+    def __init__( self, headerText, optionList, whPercent = [30,100], batch = None, group = 0, bgPath = None, fullScreenBlend = False, bgObj = None ) :
         self.batch, self.group = batch, group 
+        self.bgObj = bgObj
         self.sidePanelWH = [ reduceTo( glb.wh[0], whPercent[0] ), reduceTo( glb.wh[1], whPercent[1] ) ]
         self.setBG( bgPath )
         self.setSidePanel( color[ SIDE_PANEL_COLOR ], fullScreenBlend )
@@ -21,13 +22,11 @@ class SidePanel( GM.GameModel ) :
         self.setPanel( optionList )
 
     def draw( self ) :
+        if self.bgObj : self.bgObj.draw()
         self.batch.draw()
         
-    def highlightOptionAtXY( self, xy ) :
-        self.highlightQuadAtXY( xy, color[ HIGHLIGHT_QUAD_COLOR ], len( self.optionList[ self.XYToIndex( xy )[0] ] ) == 2 )
-
     def mouseMotion( self, xy ) :
-        self.highlightOptionAtXY( xy )
+        self.highlightQuadAtXY( xy, color[ HIGHLIGHT_QUAD_COLOR ], len( self.optionList[ self.XYToIndex( xy )[0] ] ) == 2 )
 
     def mousePress( self, xy, button ) :
         if self.inside( xy ) :
@@ -38,11 +37,8 @@ class SidePanel( GM.GameModel ) :
         return None
 
     def mouseDrag( self, xy, button ) :
-        self.highlightOptionAtXY( xy )        
+        self.highlightQuadAtXY( xy, color[ HIGHLIGHT_QUAD_COLOR ], len( self.optionList[ self.XYToIndex( xy )[0] ] ) == 2 )
 
-    def mouseRelease( self, xy, button ) :
-        pass
-    
     def setBG( self, bgPath ) :
         if bgPath : 
             mdl.gif( [0,0], bgPath ,glb.wh, self.batch, self.group + gBG )

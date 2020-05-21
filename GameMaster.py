@@ -3,6 +3,7 @@ import Menu
 import model as mdl
 import SidePanel as sp
 import Player
+from pyglet.window import key
 import pyglet.graphics as pyGra
 import GameModel 
 
@@ -20,6 +21,15 @@ class GameMaster :
         self.batch = self.fadeQuad = None
         self._status = SETUP
         glb.Aud.baseSetup()
+        self.pausePanel = sp.SidePanel( 
+                'Paused',
+                [ 
+                    [ 'Resume' , self.unPause ], [ 'Main Menu' , Menu.display ],
+                        [],[],[],[], [ 'Cancel' , self.unPause ]                      
+                ],
+            batch =  pyGra.Batch(), group = Player.gCrosshair + 1,
+            fullScreenBlend = True, bgObj = self
+        )
 
     def setupConfirmSeq( self ) : 
         if self.player[ self.ind ].shipsColliding() : return 
@@ -146,8 +156,12 @@ class GameMaster :
     def mouseRelease( self, xy, button ) :
         if self._status == SETUP : self.player[ self.ind ].mouseRelease( xy, button )
 
-    def keyPress( self, btn ) : pass
-    def update  ( self      ) : pass
+    def keyPress( self, btn ) : 
+        if self._status == PLAYING and btn == key.ESCAPE : self.pause() 
+
+    def update  ( self ) : pass
+    def unPause ( self ) : glb.onScreen = self 
+    def pause   ( self ) : glb.onScreen = self.pausePanel
 
     def archivePlayer1( self             ) : return self.player[ 0 ].archive(            )
     def archivePlayer2( self             ) : return self.player[ 1 ].archive(            )
