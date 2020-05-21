@@ -65,6 +65,8 @@ class Nothing :
     @staticmethod
     def update      (            ) : pass
     @staticmethod
+    def doNothing   (            ) : pass
+    @staticmethod
     def mouseMotion ( xy         ) : pass
     @staticmethod
     def mousePress  ( xy, button ) : pass
