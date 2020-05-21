@@ -6,7 +6,7 @@ shipLength = [ 2, 3, 4, 5 ]
 shipCount = len( shipLength )
 collisionColor = [ [ 0, 255, 0, 80 ], [ 255, 0, 0, 80 ] ]
 gShipGrid, gShip, gSmoke, gExp = list( range( 4 ) )
-MISS, EXPLODED, HIT = list( range( 3 ) )
+MISS, EXPLODED, HIT, ANNIHILATED = list( range( 4 ) )
 
 class Ship( GM.GameModel ):
     def __init__( self, xy, lb, id, orientation = 1, batch = None, group = 0 ) :
@@ -37,6 +37,7 @@ class Ship( GM.GameModel ):
                     if self.health == 0 :
                         self.model.visible = True
                         self.initiateMassExplosion()
+                        return ANNIHILATED
                     return EXPLODED
             return HIT
         return MISS
