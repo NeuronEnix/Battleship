@@ -1,3 +1,4 @@
+import os
 import model as mdl
 import pyglet.media as pyMed
 
@@ -12,7 +13,7 @@ def audio( name, loop = False ) :
     aud = pyMed.load( 'res/aud/' + name + '.wav')
     if loop : plr = pyMed.Player() ; plr.queue( aud ) ; plr.loop = True ; return plr
     return pyMed.StaticSource( aud )
-
+def doNothing( something = None ) : pass
 wh = []
 onScreen = None
 
@@ -36,27 +37,18 @@ class Aud :
     @staticmethod
     def intro    (     ) : Aud.setCurAud( Aud._intro     )
 
-class Path :
-    # Image
-    shipImg             = 'ship/'
-    crosshairImg        = 'crosshair'
-    misfireImg          = 'misfire'
-
-    # Gif
-    bgGif               = 'bg'
-    oceanGif            = 'ocean'
-    explosionGif        = 'explosion'
-    smokeGif            = 'smoke'
-
-p = Path
-# Preloading
-mdl.gif( [0,0],  p.bgGif)
-mdl.gif( [0,0],  p.oceanGif)
-mdl.gif( [0,0],  p.explosionGif)
-mdl.gif( [0,0],  p.smokeGif)
-for i in range( 4 ) :
-    for j in range( 4 ) :
-        mdl.img([0,0], p.shipImg +  str(i) + str(j)  )
+load = {'.png' : mdl.img, '.gif' : mdl.gif, '.wav' : audio, '.mp4' : doNothing }
+def loadResource( path ) :
+    ( curDir , dirs, files ) = next( os.walk( path ) )
+    for dir in dirs : loadResource( os.path.join( curDir, dir ) )
+    halfPath = curDir.split('\\')[2:] # Removes res/.*/
+    # if there are any dir inside res/.*/ then make then make them as dirA/dirB/dirC
+    if halfPath : halfPath = os.path.join(  *curDir.split('\\')[2:] ).replace('\\','/') + '/' 
+    else        : halfPath = ''
+    for file in files :
+        name, ext = os.path.splitext( file )
+        load[ext]( halfPath + name )
+loadResource('res')
 
 class Nothing :
     @staticmethod
