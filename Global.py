@@ -1,4 +1,3 @@
-# Window Width and Height
 import model as mdl
 import pyglet.media as pyMed
 
