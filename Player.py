@@ -25,7 +25,6 @@ class Player( GM.GameModel ):
     def hit( self, xy ) :
         if self.inside( xy ) :
             ind = self.XYToIndex( xy )
-            print( ind )
             for ship in self.ships :
 
                 shipStatus     =  ship.hit( xy ) 
