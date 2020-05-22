@@ -7,6 +7,7 @@ shipCount = len( shipLength )
 collisionColor = [ [ 0, 255, 0, 80 ], [ 255, 0, 0, 80 ] ]
 gShipGrid, gShip, gSmoke, gExp = list( range( 4 ) )
 MISS, EXPLODED, HIT, ANNIHILATED = list( range( 4 ) )
+shipPath, explosionGif, smokeGif = 'ship/', 'explosion', 'smoke'
 
 class Ship( GM.GameModel ):
     def __init__( self, xy, lb, id, orientation = 1, batch = None, group = 0 ) :
@@ -19,7 +20,6 @@ class Ship( GM.GameModel ):
         self.explodedAt = [ False ]*self.health
         self.newShip( xy )
 
-# Mouse
     def mousePress( self, xy ) :
         if self.inside( xy ) :
             self.mouseOffset = [ xy[0] - self.xy[0], xy[1] - self.xy[1] ]
@@ -45,23 +45,19 @@ class Ship( GM.GameModel ):
 # Orientation 
     def horizontal ( self ) : return       self.orientation % 2
     def vertical   ( self ) : return not   self.orientation % 2
-        
-    def rotate( self ) :
-        self.orientation += 1
-        self.orientation %= 4
-        self.newShip(  )
+    def rotate     ( self ) :
+        self.orientation = ( self.orientation + 1 ) % 4 ; self.newShip(  )
 
     def newShip( self, xy = None ) :
-        shipPath  = glb.Path.shipImg +  str(self.id) + str(self.orientation)
-        wh = list(self.lb)
-        rc = [1, self.length ]
+        shipImg = shipPath + str(self.id) + str( self.orientation )
+        wh = list( self.lb )
+        rc = [ 1, self.length ]
         if xy == None : xy = self.xy
         if self.vertical() :
-            wh.reverse()
-            rc.reverse()
+            wh.reverse()   ; rc.reverse()
         self.model = glb.delIf( self.model )
         self._xy, self._wh, self._rc = xy, wh, rc
-        self.model = mdl.img( xy, shipPath, wh, self.batch, self.group + gShip )
+        self.model = mdl.img( shipImg, xy, wh, self.batch, self.group + gShip )
         self.highlightFullQuad = [0,255,0,65]
 
     def explodeAt( self, ind ) :
@@ -69,8 +65,8 @@ class Ship( GM.GameModel ):
         if self.explodedAt[ i ] :
             return False
         xy = self.indexToXY( ind )
-        mdl.gif( xy, glb.Path.explosionGif , self.subWH, self.batch, self.group + gExp , oneTime = True )
-        mdl.gif( xy, glb.Path.smokeGif, self.subWH, self.batch, self.group + gSmoke)
+        mdl.gif( explosionGif, xy, self.subWH, self.batch, self.group + gExp , oneTime = True )
+        mdl.gif( smokeGif, xy, self.subWH, self.batch, self.group + gSmoke)
         glb.Aud.explosion.play()
         self.health -=1
         self.explodedAt[ i ] = True
@@ -80,7 +76,7 @@ class Ship( GM.GameModel ):
         for i in range( self.rc[0] ) :
             for j in range( self.rc[1] ) :
                 xy = self.indexToXY( [i,j] )
-                mdl.gif( xy, glb.Path.explosionGif, self.subWH, self.batch, self.group + gExp, oneTime = True )
+                mdl.gif( explosionGif, xy, self.subWH, self.batch, self.group + gExp, oneTime = True )
         glb.Aud.massExplosion.play()
 
     def s_xy( self, xy ) :
@@ -93,6 +89,5 @@ class Ship( GM.GameModel ):
             self.prevCollisionStatus  = self.curCollisionStatus
             self.highlightFullQuad    = collisionColor[ self.curCollisionStatus ]
             
-    def s_collision( self, collision ) : 
-        self.curCollisionStatus = collision
+    def s_collision( self, collision ) : self.curCollisionStatus = collision
     collision = property( None, s_collision )

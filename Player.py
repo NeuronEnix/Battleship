@@ -5,13 +5,14 @@ import Ship
 
 HIT, MISS, OUTSIDE, INSIDE, ANNIHILATED = list( range( 5 ) )
 gPlayerGrid, gMisfire, gShip, gCrosshair = list( range( 4 ) )
+crosshairImg, misfireImg = 'crosshair', 'misfire'
 
 class Player( GM.GameModel ):
     def __init__( self, xy, wh, rc = [10,10], batch = None, group = 0) :
         self.batch, self.group = batch, group
         super().__init__( xy, wh, rc, batch, self.group + gPlayerGrid, True )
         self.health = 4
-        self.crosshair = mdl.img( xy, glb.Path.crosshairImg , self.subWH, self.batch, self.group + gCrosshair, anchorXY = True )
+        self.crosshair = mdl.img( crosshairImg, xy , self.subWH, self.batch, self.group + gCrosshair, anchorXY = True )
         self.prevCroshairInd = self.XYToIndex( xy )
         self.crosshair.visible = False
         self.crosshairXYCorrector = [ self.subWH[0] // 2, self.subWH[1] // 2 ]
@@ -26,7 +27,6 @@ class Player( GM.GameModel ):
         if self.inside( xy ) :
             ind = self.XYToIndex( xy )
             for ship in self.ships :
-
                 shipStatus     =  ship.hit( xy ) 
                 if shipStatus  == Ship.MISS        : continue
                 if shipStatus  == Ship.ANNIHILATED : self.health -=1
@@ -37,7 +37,7 @@ class Player( GM.GameModel ):
             if not self.hitAt[ ind[0] ][ ind[1] ] :
                 self.hitAt[ ind[0] ][ ind[1] ] = True
                 xy = self.indexToXY( ind )
-                self.misfireList.append( mdl.img( xy, glb.Path.misfireImg, self.subWH, self.batch, self.group + gMisfire ) )
+                self.misfireList.append( mdl.img( misfireImg, xy, self.subWH, self.batch, self.group + gMisfire ) )
                 glb.Aud.misfire.play()
                 self.crosshair.visible = False
                 return MISS
@@ -112,8 +112,7 @@ class Player( GM.GameModel ):
         return ships
      
     def update( self ) :
-        if self.crosshair.visible :
-            self.crosshair.rotation += 4
+        if self.crosshair.visible : self.crosshair.rotation += 4
     
     def archive( self ) :
         data = []
@@ -140,12 +139,9 @@ class Player( GM.GameModel ):
 
     def s_crosshairXY( self, xy ) :
         ind = self.XYToIndex( xy )
-        if self.prevCroshairInd == ind :
-            return
+        if self.prevCroshairInd == ind : return
         xy = self.indexToXY( ind )
         self.prevCroshairInd = ind
         self.crosshair.x = xy[0] + self.crosshairXYCorrector[0]
         self.crosshair.y = xy[1] + self.crosshairXYCorrector[1]
-    
-    crosshairXY = property( None, s_crosshairXY )         
-    
+    crosshairXY = property( None, s_crosshairXY )             

@@ -1,7 +1,7 @@
 import Global as glb
 import GameMaster as GM
-
 SET_PLAYER_1, SET_PLAYER_2 = list( range( 2 ) )
+
 class MultiPlayer ( GM.GameMaster ):
     def __init__( self ) :
         super().__init__()
@@ -17,5 +17,4 @@ class MultiPlayer ( GM.GameMaster ):
             self.setBattleField( [self.archivePlayer1(), self.archivePlayer2()], 0 ,  ['Player 1', 'Player 2'] )
             glb.deb('uploading player data')    
 
-    def draw( self ) :
-        self.batch.draw()
+    def draw( self ) : self.batch.draw()

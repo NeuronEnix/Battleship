@@ -1,8 +1,7 @@
 import rsa
-import time
 import socket
-import Global as glb
 ( pubKey, priKey ) = rsa.newkeys( 512 )
+
 class CustomSocket :
     def __init__( self ) :
         
@@ -24,10 +23,8 @@ class CustomSocket :
         return self.baseAddress + str( self.ind % 255 )
 
     def isConnected( self, port = None ) :
-        n = self.nextAddress()
-        if port :
-            self.socket.sendto( self.connectionString.encode('utf-8'), ( n, port ) )
-        try :
+        if port : self.socket.sendto( self.connectionString.encode('utf-8'), ( self.nextAddress(), port ) )
+        try     :
             clientData, clientAddress = self.socket.recvfrom( 1024 )
             clientHandshake, n, e = clientData.decode('utf-8')[0:].split( ':' )
             if clientHandshake == self.handshake :
@@ -39,10 +36,10 @@ class CustomSocket :
         return False
             
     def s_data( self, data ) :
-        self.socket.send( rsa.encrypt( bytes( data, 'utf-8' ), self.clientKey ) )
+        self.socket.send( rsa.encrypt( bytes( data, 'utf-8'  ), self.clientKey ) )
     
     def g_data( self ) :
         try     : return rsa.decrypt( self.socket.recv( 1024 ), self.priKey ).decode('utf-8')
         except  : return None
-    data = property(g_data,s_data)
+    data = property( g_data, s_data )
     

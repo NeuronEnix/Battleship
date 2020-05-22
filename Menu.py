@@ -7,8 +7,7 @@ import MultiPlayer as mp
 from pyglet.window import key
 import pyglet.graphics as pyGra
 
-JOINING = 0
-ESTABLISH_CONNECTION = 1
+JOINING, ESTABLISH_CONNECTION = list( range( 2 ) )
 menu = None # will get assigned to instance of MainMenu() in MainMenu().__init__()
 def display() : menu.mainMenu()
 class MainMenu( sp.SidePanel ):
@@ -17,11 +16,10 @@ class MainMenu( sp.SidePanel ):
         global menu     ; menu = self
         self.initInfo() ; self.socket = CustomSocket.CustomSocket()
         super().__init__(
-            self.mainMenuInfo [ 0 ],
-            self.mainMenuInfo [ 1 ],
+            self.mainMenuInfo [ 0 ], self.mainMenuInfo [ 1 ],
             batch   = pyGra.Batch(),
             group   = 0            ,
-            bgPath  = glb.Path.bgGif  
+            bg  = 'bg' 
         )
         self.mainMenu() 
 
@@ -29,7 +27,7 @@ class MainMenu( sp.SidePanel ):
         self.lanStatus = None ; self.resetPanel( self.mainMenuInfo )
         glb.onScreen   = self ; glb.Aud.intro  (                   )
         
-    def lanMenu ( self )    :  self.resetPanel ( self.lanMenuInfo  ) ; self.lanStatus = None ; self.port      = ''
+    def lanMenu ( self )    :  self.resetPanel ( self.lanMenuInfo  ) ; self.lanStatus = None ; self.port = ''
 
     def hostMenu( self )    :
         self.hostMenuInfo[1][1][0] = str( self.socket.port  )

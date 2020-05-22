@@ -2,14 +2,8 @@ import Global as glb
 import GameMaster as GM
 import time
 import ast
-
-myTurn = 0
-enemyTrun = 1
-
-MOUSE_MOTION = 'm'
-MOUSE_PRESS = 'p'
-PLAYER_TIME = 't'
-PLAYER_ARCHIVE = 'a'
+myTurn, enemyTrun = list( range( 2 ) )
+MOUSE_MOTION, MOUSE_PRESS, PLAYER_TIME, PLAYER_ARCHIVE  = list( map( str, range( 4 ) ) )
 
 class Lan ( GM.GameMaster ):
     def __init__( self, socket ) :
@@ -25,11 +19,10 @@ class Lan ( GM.GameMaster ):
         
         # Changing "Confirm" to "Waiting..." on SidePanel
         sp = self.sidePanel
-        sp.optionList[-2] = ['Waiting...']
-        sp.resetPanel( ['Player  1 ', sp.optionList] )
+        sp.optionList[-2] = ['Waiting...'] ; sp.resetPanel( ['Player  1 ', sp.optionList] )
         
         self.socket.data = PLAYER_TIME + str( self.p1ConfirmTime )
-        self.p1Archive = self.archivePlayer1()
+        self.p1Archive   = self.archivePlayer1()
         self.decideFirstMove()
 
     def mouseMotion( self, xy ) :
@@ -37,7 +30,6 @@ class Lan ( GM.GameMaster ):
         super().mouseMotion( xy )
 
     def mousePress( self, xy , button ) :
-        
         if button == 'l' and self.forwardToSocket( xy, MOUSE_PRESS ) == False : return 
         super().mousePress( xy, button )
            
@@ -48,19 +40,6 @@ class Lan ( GM.GameMaster ):
                 ind = self.player[ not self.ind ].XYToIndex( xy )
                 self.socket.data = tag + str( ind )
         return True
-
-    def toXY( self, ind ) :
-        xy = self.player[ not self.ind ].indexToXY( ind )
-        xy[0] += 10  ;   xy[1] += 10
-        return xy
-
-    def update( self ) :
-        data = self.socket.data
-        if data :
-            if   data[0] == MOUSE_MOTION    : super().mouseMotion      ( self.toXY(ast.literal_eval( data[1:] )) )
-            elif data[0] == MOUSE_PRESS     : super().mousePress      ( self.toXY(ast.literal_eval( data[1:] )), 'l' )
-            elif data[0] == PLAYER_ARCHIVE  : self.setP2Archive     ( ast.literal_eval( data[1:] ) )
-            elif data[0] == PLAYER_TIME     : self.enemyConfirmTime( float(data[1:]) )
 
     def enemyConfirmTime( self, p2ConfirmTime ) :
         self.p2ConfirmTime = p2ConfirmTime
@@ -75,4 +54,16 @@ class Lan ( GM.GameMaster ):
     def setP2Archive( self, p2Archive ) :
         self.setBattleField( [ self.p1Archive, p2Archive ], self.playerTurn, [ 'Player 1', 'Enemy' ] )
 
-    def draw( self ) : self.batch.draw()
+    def toXY( self, ind ) :
+        xy = self.player[ not self.ind ].indexToXY( ind )
+        xy[0] += 10  ;   xy[1] += 10
+        return xy
+
+    def draw  ( self ) : self.batch.draw()
+    def update( self ) :
+        data = self.socket.data
+        if data :
+            if   data[0] == MOUSE_MOTION    : super().mouseMotion  ( self.toXY( ast.literal_eval( data[1:] ) )      )
+            elif data[0] == MOUSE_PRESS     : super().mousePress   ( self.toXY( ast.literal_eval( data[1:] ) ), 'l' )
+            elif data[0] == PLAYER_ARCHIVE  : self.setP2Archive    (            ast.literal_eval( data[1:] )        )
+            elif data[0] == PLAYER_TIME     : self.enemyConfirmTime(                       float( data[1:] )        )

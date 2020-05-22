@@ -7,20 +7,17 @@ from pyglet.window import key
 import pyglet.graphics as pyGra
 import GameModel 
 
-def reduceTo( val, percentage ) :
-    return val * percentage // 100
-
+def reduceTo( val, percentage ) : return val * percentage // 100
+oceanBG = 'ocean'
 gOcean, gFullQuad, gTopPanel, gHeaderQuad, gHeaderText = list( range( 5 ) )
 gSidePanel = gPlayer = gTopPanel
 SETUP, PLAYING, VICTORY = list( range( 3 ) )
     
 class GameMaster :
     def __init__( self ) :
-        self.player = [ None ] * 2
-        self.turnLbl = [ None ] * 2
+        self.player, self.turnLbl = [ None ] * 2, [ None ] * 2
         self.batch = self.fadeQuad = None
-        self._status = SETUP
-        glb.Aud.baseSetup()
+        self._status = SETUP ; glb.Aud.baseSetup()
         self.pausePanel = sp.SidePanel( 
                 'Paused',
                 [ 
@@ -38,7 +35,7 @@ class GameMaster :
     def setPlayer( self, playerName, onConfirm ) :
         self.onConfirm = onConfirm
         self.batch = pyGra.Batch()
-        self.ocean = mdl.gif( [0,0], glb.Path.oceanGif , glb.wh, self.batch, gOcean )
+        self.ocean = mdl.gif( oceanBG, [0,0], glb.wh, self.batch, gOcean )
         topPanelWHPerc = [30,100]
         self.sidePanel = sp.SidePanel(
             playerName, whPercent = topPanelWHPerc,
@@ -52,19 +49,14 @@ class GameMaster :
         return Player.Player( [x,y], wh, batch = self.batch, group = gPlayer )
         
     def setPlayer1( self, name, onConfirm ) :
-        self.ind = 0
-        self.player[ self.ind ] = self.setPlayer( name, onConfirm )
-
+        self.ind = 0 ; self.player[ self.ind ] = self.setPlayer( name, onConfirm )
     def setPlayer2( self, name, onConfirm ) :
-        self.ind = 1
-        self.player[ self.ind ] = self.setPlayer( name, onConfirm )
+        self.ind = 1 ; self.player[ self.ind ] = self.setPlayer( name, onConfirm )
 
     def setBattleField( self, playerArchive, playerInd, header ) :
-        glb.Aud.gameplay()
-        
-        self.batch = pyGra.Batch()
-        self.ocean = mdl.gif( [0,0], glb.Path.oceanGif , glb.wh, self.batch, gOcean )
         self._status = PLAYING
+        self.batch = pyGra.Batch()
+        self.ocean = mdl.gif( oceanBG, [0,0], glb.wh, self.batch, gOcean )
 
         # Top Panel
         topPanelXY = [0, reduceTo(glb.wh[1],90)] ; topPanelWH = [glb.wh[0], glb.wh[1] - topPanelXY[1] ]
@@ -82,6 +74,7 @@ class GameMaster :
         self.extractPlayer2( playerArchive[1] )
 
         self.setPlayerTurn( playerInd )
+        glb.Aud.gameplay  (           )
 
     def setPlayerLayout( self, ind, playerName, topPanelXY, topPanelWH ) :
         baseWH = [ 600, 600 ]
@@ -105,13 +98,12 @@ class GameMaster :
         self.ind = ind
 
     def victoryStuffs( self ) :
-        self._status = VICTORY
-        self.player[ self.ind ].makeShipsVisible()
+        self._status                  =  VICTORY
         self.turnLbl[ self.ind ].text = 'Victory !'
+        self.player [ self.ind ].makeShipsVisible()
         
         pXY = self.player[ self.ind ].xy 
         pWH = self.player[ self.ind ].wh        
-
         wh = [ reduceTo( pWH[0], 50 )       ,  self.topPanelXY[1] - pXY[1] - pWH[1] - 10 ]
         xy = [ ( glb.wh[0] - wh[0] ) // 2   ,                       pXY[1] + pWH[1] + 5  ]
 
@@ -119,14 +111,14 @@ class GameMaster :
         mXY = self.mainMenuButton.xy
         mWH = self.mainMenuButton.wh
 
-        mdl.quad(  mXY ,  mWH   ,  [ 0,159,217,180],  self.batch, gFullQuad,  blend = True )      
+        mdl.quad(  mXY ,  mWH   ,  [ 0,159,217,180] ,  self.batch, gFullQuad,  blend = True )      
         mdl.quad( [0,0],  glb.wh,  [ 0, 0, 0, 150 ] ,  self.batch, gFullQuad,  blend = True )      
 
         wh[1] = reduceTo( wh[1], 85 )
         mdl.label( xy, wh, 'Main Menu', size = 49, batch = self.batch, group = gHeaderText, xyPercInside = [ 5, 20 ] )
 
     def setFader( self, ind ) :
-        if self.fadeQuad :  self.fadeQuad.delete()
+        if self.fadeQuad            :  self.fadeQuad.delete()
         qXY = self.player[ ind ].xy ;   qWH = self.player[ ind ].wh
         self.fadeQuad = mdl.quad( qXY, qWH, [ 0, 0, 0, 150 ], self.batch, Player.gShip, blend = True )
 
