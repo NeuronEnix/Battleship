@@ -99,8 +99,9 @@ class GameMaster :
 
     def victoryStuffs( self ) :
         self._status                  =  VICTORY
-        self.turnLbl[ self.ind ].text = 'Victory !'
-        self.player [ self.ind ].makeShipsVisible()
+        self.turnLbl[     self.ind ].text = 'Victory !'
+        self.player [     self.ind ].makeShipsVisible()
+        self.player [ not self.ind ].makeShipsVisible()
         
         pXY = self.player[ self.ind ].xy 
         pWH = self.player[ self.ind ].wh        

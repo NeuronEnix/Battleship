@@ -119,12 +119,15 @@ class Player( GM.GameModel ):
         for ship in self.ships :
             data.append( [ self.XYToIndex( ship.xy ), ship.orientation ] )
         return data
+    
     def makeShipsVisible( self ) :
         for ship in self.ships :
             ship.model.visible = True
+            ship.reColorBasedOnHealth()
+            
     def shipsColliding( self ) :
         for ship in self.ships : 
-            if ship.curCollisionStatus == True : return True
+            if ship.baseColor == Ship.RED : return True
         return False
     
     def extract( self, data ) :
