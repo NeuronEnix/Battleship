@@ -24,20 +24,21 @@ class MainMenu( sp.SidePanel ):
         self.mainMenu() 
 
     def mainMenu( self )    :  
-        self.lanStatus = None ; self.resetPanel( self.mainMenuInfo )
-        glb.onScreen   = self ; glb.Aud.intro  (                   )
+        self.lanStatus = None ; self.resetPanelTo( self.mainMenuInfo )
+        glb.onScreen   = self ; glb.Aud.intro    (                   )
         
-    def lanMenu ( self )    :  self.resetPanel ( self.lanMenuInfo  ) ; self.lanStatus = None ; self.port = ''
+    def lanMenu ( self )    :  self.resetPanelTo ( self.lanMenuInfo  ) ; self.lanStatus, self.port = None, ''; self.delCaret()
 
     def hostMenu( self )    :
         self.hostMenuInfo[1][1][0] = str( self.socket.port  )
-        self.resetPanel                 ( self.hostMenuInfo )
+        self.resetPanelTo               ( self.hostMenuInfo )
         self.connect                    (                   )
     
     def joinMenu( self ) :
-        self.lanStatus          =   JOINING
+        self.lanStatus           =   JOINING
         self.joinMenuInfo[1][-2] = [ 'Connect', self.connect ]
-        self.resetPanel            ( self.joinMenuInfo       )
+        self.resetPanelTo          ( self.joinMenuInfo       )
+        super().dispCaretAt        ( self.optionLabels[1]    ) 
     
     def connect( self ) :
         if  self.lanStatus == JOINING   : 
@@ -45,6 +46,7 @@ class MainMenu( sp.SidePanel ):
             self.port                   = int( self.port       )
             self.optionList  [-2]       =    [ 'Connecting...' ]
             self.optionLabels[-2].text  =      'Connecting...'
+            super().delCaret()
 
         self.lanStatus                  = ESTABLISH_CONNECTION
                 
@@ -58,6 +60,7 @@ class MainMenu( sp.SidePanel ):
             elif num                == -2 : self.connect() ; return         # On Enter
             elif len( self.port )   <   5 : self.port += str( num )         # On Numbers 
             self.optionLabels[1].text = 'ID : ' + self.port
+            super().dispCaretAt( self.optionLabels[1] )
                     
     def initInfo( self ) :
         self.mainMenuInfo = [ 'Battleship', [
