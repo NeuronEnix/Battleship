@@ -62,7 +62,7 @@ def grid( xy, wh, rc, batch = None, group = 0 ) :
     else     : grid = pyGra.vertex_list( len( verts ) // 2, ( 'v2i', verts ) )
     return grid
 
-def quad( xy, wh, color = [0, 255, 242, 50 ], batch = None, group = 0, blend = False  ):
+def quad( xy, wh, color = [255,255,255,255], batch = None, group = 0, blend = False  ):
     x,y = xy[0], xy[1]
     w, h = wh[0], wh[1]
     verts = ( 'v2i', ( x,  y,  x+w,    y,  x+w,y+h,    x,y+h   )    )
