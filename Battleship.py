@@ -2,7 +2,10 @@ import pyglet as py
 import Global as glb
 import Menu
 
-mouseButton = [ None,'l','m',None,'r',None, None]
+def mouseButton( btn ) :
+    if btn == py.window.mouse.LEFT  : return 'l'
+    if btn == py.window.mouse.RIGHT : return 'r'
+# mouseButton = [ None,'l','m',None,'r',None, None, None ]
 
 class Battleship( py.window.Window ):
     def __init__( self, *args, **kwargs ):
@@ -16,16 +19,15 @@ class Battleship( py.window.Window ):
         #Default Configuration
         py.gl.glClearColor(0.0,0.0,0.0,1.0)
         glb.wh = [ self.width, self.height ]
-
         Intro().play()
 
     def on_draw         ( self                         ) : self.clear() ; glb.onScreen.draw  () ; self.fps_display.draw()
     def update          ( self, dt                     ) :                glb.onScreen.update()
 
     def on_mouse_motion ( self, x, y, dx, dy           ) : glb.onScreen.mouseMotion  ( [x,y]                     )
-    def on_mouse_press  ( self, x, y, btn, mod         ) : glb.onScreen.mousePress   ( [x,y], mouseButton[ btn ] )
-    def on_mouse_drag   ( self, x, y, dx, dy, btn, mod ) : glb.onScreen.mouseDrag    ( [x,y], mouseButton[ btn ] )
-    def on_mouse_release( self, x, y, btn, mod         ) : glb.onScreen.mouseRelease ( [x,y], mouseButton[ btn ] )
+    def on_mouse_press  ( self, x, y, btn, mod         ) : glb.onScreen.mousePress   ( [x,y], mouseButton( btn ) )
+    def on_mouse_drag   ( self, x, y, dx, dy, btn, mod ) : glb.onScreen.mouseDrag    ( [x,y], mouseButton( btn ) )
+    def on_mouse_release( self, x, y, btn, mod         ) : glb.onScreen.mouseRelease ( [x,y], mouseButton( btn ) )
     def on_key_press    ( self, btn, modifiers         ) : glb.onScreen.keyPress     (                     btn   )
             
     def on_resize( self, wid, hgt ):
