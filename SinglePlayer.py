@@ -17,8 +17,9 @@ class SinglePlayer ( GM.GameMaster ):
 
     def update( self ) :
         if self._status == GM.PLAYING and self.ind == GM.PLAYER_2 : 
-            print( ( self.player[ not self.ind ].indexToXY( self.ai.nextHit() ) , 'l' ) )
-            super().mousePress( self.player[ not self.ind ].indexToXY( self.ai.nextHit() ) , 'l' )
+            xy = self.player[ not self.ind ].indexToXY( self.ai.nextHit() )
+            xy[0] += 5 ; xy[1] += 5
+            super().mousePress( xy , 'l' )
             
         
     def draw  ( self ) : self.batch.draw()
@@ -35,5 +36,4 @@ class AI :
 
     def nextHit( self ) :
         self.nextInd += 1
-        return self.hitAt[ self.nextInd ]
-        
+        return self.hitAt[ self.nextInd ]        
