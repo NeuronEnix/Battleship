@@ -13,7 +13,7 @@ class SinglePlayer ( GM.GameMaster ):
 
     def playerSetupSeq( self ) :
         self.setPlayer2( 'Player  2', onConfirm = self.playerSetupSeq )
-        self.setBattleField( [super().archivePlayer1(), super().archivePlayer2()], 0 ,  ['Player 1', 'A    I'] )
+        self.setBattleField( [super().archivePlayer1(), super().archivePlayer2()], 0 ,  ['Player 1', 'A I'] )
 
     def update( self ) :
         if self._status == GM.PLAYING and self.ind == GM.PLAYER_2 : 
