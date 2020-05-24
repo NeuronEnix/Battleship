@@ -40,7 +40,7 @@ class GameMaster :
         topPanelWHPerc = [30,100]
         self.sidePanel = sp.SidePanel(
             playerName, whPercent = topPanelWHPerc,
-            optionList = [ ['Place your'], ['Ships'], [],[],[], ['Confirm', self.setupConfirmSeq ], [ 'Cancel', Menu.display ] ],
+            optionList = [ ['Place your ships'], ['Drag : To move'], ['Right click : '],['           To Rotate'],[], ['Confirm', self.setupConfirmSeq ], [ 'Cancel', Menu.display ] ],
             batch = self.batch, group = gSidePanel
         )
         remainingWH = [ reduceTo( glb.wh[0], 100 - topPanelWHPerc[0] ), glb.wh[1] ]
