@@ -15,6 +15,5 @@ class MultiPlayer ( GM.GameMaster ):
             self.setPlayer2( 'Player  2', onConfirm = self.playerSetupSeq )
         else:
             self.setBattleField( [self.archivePlayer1(), self.archivePlayer2()], 0 ,  ['Player 1', 'Player 2'] )
-            glb.deb('uploading player data')    
 
     def draw( self ) : self.batch.draw()
