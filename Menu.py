@@ -1,16 +1,17 @@
 import sys
 import LAN
+import SidePanel
 import CustomSocket
 import Global as glb
-import SidePanel as sp
 import MultiPlayer as mp
+import SinglePlayer as sp
 from pyglet.window import key
 import pyglet.graphics as pyGra
 
 JOINING, ESTABLISH_CONNECTION = list( range( 2 ) )
 menu = None # will get assigned to instance of MainMenu() in MainMenu().__init__()
 def display() : menu.mainMenu()
-class MainMenu( sp.SidePanel ):
+class MainMenu( SidePanel.SidePanel ):
         
     def __init__( self ) :
         global menu     ; menu = self
@@ -64,7 +65,7 @@ class MainMenu( sp.SidePanel ):
                     
     def initInfo( self ) :
         self.mainMenuInfo = [ 'Battleship', [
-                                                [ 'Single Player'   , self.doNothing   ],
+                                                [ 'Single Player'   , sp.SinglePlayer  ],
                                                 [ 'Multi Player'    , mp.MultiPlayer   ],     
                                                 [ 'LAN'             , self.lanMenu     ], [],[],[],
                                                 [ 'Exit'            , sys.exit         ]

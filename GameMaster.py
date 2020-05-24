@@ -8,6 +8,7 @@ import pyglet.graphics as pyGra
 import GameModel 
 
 def reduceTo( val, percentage ) : return val * percentage // 100
+PLAYER_1, PLAYER_2 = 0, 1
 oceanBG = 'ocean'
 gOcean, gFullQuad, gTopPanel, gHeaderQuad, gHeaderText = list( range( 5 ) )
 gSidePanel = gPlayer = gTopPanel
