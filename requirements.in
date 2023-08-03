@@ -1,1 +1,2 @@
-pyglet==1.4.10
+pyglet==1.4
+rsa==4.0
